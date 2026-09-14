@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Riesgos y Supuestos – Proyecto Minería de Datos - E0</title>
+<title>Lista de Riesgos y Supuestos – Proyecto Minería de Datos - E0</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -36,6 +36,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../images/baseball.svg" rel="icon" type="image/svg+xml">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -45,7 +46,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-172ba59bd5e0b52282274ba0c0cc16fc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-fb70c40dc7482c689762369618a42d12.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -73,6 +74,23 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Buscar"
   }
 }</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner h1,
+      .quarto-title-block .quarto-title-banner h2,
+      .quarto-title-block .quarto-title-banner h3,
+      .quarto-title-block .quarto-title-banner h4,
+      .quarto-title-block .quarto-title-banner h5,
+      .quarto-title-block .quarto-title-banner h6
+      {
+        color: #ffffff;
+      }
+
+      .quarto-title-block .quarto-title-banner {
+        color: #ffffff;
+background: #0c2340;
+      }
+</style>
 
 
 </head>
@@ -80,10 +98,14 @@ ul.task-list li input[type="checkbox"] {
 <body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/baseball.svg" alt="Pelota de béisbol" class="navbar-logo light-content">
+    <img src="../../images/baseball.svg" alt="Pelota de béisbol" class="navbar-logo dark-content">
+    </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Proyecto Minería de Datos - E0</span>
     </a>
@@ -134,65 +156,44 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Lista de Riesgos y Supuestos</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">En esta página</h2>
-   
-  <ul>
-  <li><a href="#supuestos" id="toc-supuestos" class="nav-link active" data-scroll-target="#supuestos">Supuestos</a></li>
-  <li><a href="#riesgos-específicos-del-proyecto-y-mitigaciones" id="toc-riesgos-específicos-del-proyecto-y-mitigaciones" class="nav-link" data-scroll-target="#riesgos-específicos-del-proyecto-y-mitigaciones">Riesgos Específicos del Proyecto y Mitigaciones</a>
-  <ul class="collapse">
-  <li><a href="#riesgo-1-calidad-y-disponibilidad-insuficiente-de-datos-del-aficionado-fantasma" id="toc-riesgo-1-calidad-y-disponibilidad-insuficiente-de-datos-del-aficionado-fantasma" class="nav-link" data-scroll-target="#riesgo-1-calidad-y-disponibilidad-insuficiente-de-datos-del-aficionado-fantasma">Riesgo 1: Calidad y disponibilidad insuficiente de datos del “Aficionado Fantasma”</a></li>
-  <li><a href="#riesgo-2-transferibilidad-de-modelos-de-la-mlb-a-la-lmb" id="toc-riesgo-2-transferibilidad-de-modelos-de-la-mlb-a-la-lmb" class="nav-link" data-scroll-target="#riesgo-2-transferibilidad-de-modelos-de-la-mlb-a-la-lmb">Riesgo 2: Transferibilidad de modelos de la MLB a la LMB</a></li>
-  </ul></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Riesgos y Supuestos</h1>
-</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
 
 
-</header>
-
-
-<section id="supuestos" class="level2">
-<h2 class="anchored" data-anchor-id="supuestos">Supuestos</h2>
+<p>Proyecto de Mejora de asistencia. Lista de supuestos y riesgos.</p>
 <ul>
-<li><strong>Disponibilidad de Modelos Abiertos:</strong> Se asume que se podrá estudiar e implementar los modelos predictivos abiertos que forman parte del análisis de datos deportivos de la MLB para replicar sus resultados, primero en nuestro equipo y, en el futuro, en la LMB.</li>
-<li><strong>Factibilidad de Infraestructura (DW):</strong> Se da por sentado que se podrá implementar un Data Warehouse (DW) que permita normalizar la captura de datos históricos del estadio y los futuros datos del equipo para consumirlos en un dashboard interactivo de Marketing.</li>
+<li><p><strong>La implementación de captura de los datos de los aficionados fantasma:</strong> La captura de datos transaccionales y demográficos que se realiza en el boletaje por parte de la empresa Ticketmaster no asegura una captura de datos óptima para nuestros modelos y objetivos de minería de datos. Es por ello, que se propone realizar una captura de datos siguiendo el método probado por la Liga de Futbol Mexicana, el llamado Fan ID, y así poder registrar quiénes, cómo, cuándo y cuántos usuarios entran, compran y salen del Estadio Alfredo Harp Helú. De no ser posible el desarrollo se propondría otras opciones.</p></li>
+<li><p><strong>El desarrollo del modelo predictivo:</strong> Se intentará implementar los modelos predictivos abiertos que forman parte del análisis de datos deportivos de la asociación MLB, y así poder replicar sus resultados, primero, en nuestro equipo y en un futuro cercano, en la LMB. De no regresar los resultados esperados, se desarrollará un modelo propio en busca de poder replicar o acercar datos similares y que puedan utilizarse en la mejora de asistencia del Estadio.</p></li>
+<li><p><strong>Data Warehouse:</strong> Se implementará un DW para normalizar la captura de datos históricos del estadio Alfredo Harp Helú y así mismo la captura de los futuros datos del equipo y del mismo.</p></li>
+<li><p><strong>Dashboard interactivo abierto:</strong> Para los canales de Marketing y se puedan utilizar sus herramientas para combatir la baja asistencia de ciertos juegos en base al modelo predictivo.</p></li>
 </ul>
-</section>
-<section id="riesgos-específicos-del-proyecto-y-mitigaciones" class="level2">
-<h2 class="anchored" data-anchor-id="riesgos-específicos-del-proyecto-y-mitigaciones">Riesgos Específicos del Proyecto y Mitigaciones</h2>
-<section id="riesgo-1-calidad-y-disponibilidad-insuficiente-de-datos-del-aficionado-fantasma" class="level3">
-<h3 class="anchored" data-anchor-id="riesgo-1-calidad-y-disponibilidad-insuficiente-de-datos-del-aficionado-fantasma">Riesgo 1: Calidad y disponibilidad insuficiente de datos del “Aficionado Fantasma”</h3>
-<p>La captura de datos transaccionales y demográficos que actualmente realiza Ticketmaster se centra solo en el comprador primario, lo que podría no asegurar una calidad de datos óptima y suficiente para correr los modelos de segmentación planeados para los acompañantes. * <strong>Mitigación Propuesta:</strong> Proponer y explorar la implementación de una captura de datos siguiendo el método probado por la Liga de Fútbol Mexicana (Fan ID), para poder registrar directamente quiénes, cómo, cuándo y cuántos usuarios entran, compran y salen del estadio.</p>
-</section>
-<section id="riesgo-2-transferibilidad-de-modelos-de-la-mlb-a-la-lmb" class="level3">
-<h3 class="anchored" data-anchor-id="riesgo-2-transferibilidad-de-modelos-de-la-mlb-a-la-lmb">Riesgo 2: Transferibilidad de modelos de la MLB a la LMB</h3>
-<p>Que los modelos predictivos generados a partir de los datos deportivos abiertos de la MLB no arrojen los resultados esperados aplicados al entorno del equipo local. * <strong>Mitigación Propuesta:</strong> Si los resultados de la tropicalización fallan, se desarrollará un modelo propio iterativo desde cero en busca de poder encontrar variables más correlacionadas con el mercado y la asistencia particular del Estadio Alfredo Harp Helú.</p>
 
 
-</section>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -596,6 +597,19 @@ ul.task-list li input[type="checkbox"] {
   });
   </script>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Proyecto de Minería de Datos · E0: Comprensión del Negocio</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Estadio Alfredo Harp Helú · Diablos Rojos del México</p>
+</div>
+  </div>
+</footer>
 
 
 

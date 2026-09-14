@@ -32,7 +32,7 @@ title: "Bitácora de la Reunión con el Stakeholder"
 - **Seguridad:** Alianzas con plataformas de movilidad para dar códigos de descuento a la salida.
 
 ## Reflexión del Equipo
-Tras la entrevista, nuestro entendimiento del problema cambió: inicialmente creíamos que se trataba de aumentar la asistencia general, pero ahora comprendemos que el verdadero problema es la alta varianza en juegos valle (entre semana) y el alto porcentaje de asistentes anónimos. Un modelo predictivo tiene mucho sentido aquí porque permite tomar decisiones de operaciones y marketing rápidas y focalizadas en ventanas de 48 horas.
+Tras la entrevista se entiende que el problema no es la asistencia general,el problema es la alta varianza en juegos valle  y el alto porcentaje de asistentes anónimos. Un modelo predictivo tiene mucho sentido aquí porque permite tomar decisiones de operaciones y marketing rápidas y focalizadas en ventanas de 48 horas.
 
 ## Fuentes de la Simulación
 Las referencias que respaldan los datos citados en esta simulación (récord de asistencia, precios, propiedad del estadio y participación en el Mundial de 2026) se encuentran documentadas en [Fuentes y Referencias](fuentes.qmd).

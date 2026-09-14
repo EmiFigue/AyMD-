@@ -1,11 +1,17 @@
 project:
   type: website
   output-dir: docs
+  resources:
+    - entregas/E0_comprension_negocio/BUC.pdf
+    - .nojekyll
 
 website:
   title: "Proyecto Minería de Datos - E0"
   page-navigation: true
+  favicon: images/baseball.svg
   navbar:
+    logo: images/baseball.svg
+    logo-alt: "Pelota de béisbol"
     left:
       - href: index.qmd
         text: Inicio
@@ -23,9 +29,16 @@ website:
         text: Uso IA
       - href: entregas/E0_comprension_negocio/fuentes.qmd
         text: Fuentes
+  page-footer:
+    left: "Proyecto de Minería de Datos · E0: Comprensión del Negocio"
+    right: "Estadio Alfredo Harp Helú · Diablos Rojos del México"
 
 format:
   html:
-    theme: cosmo
+    theme:
+      - cosmo
+      - styles.scss
     toc: true
     lang: es
+    title-block-banner: "#0c2340"
+    title-block-banner-color: "#ffffff"

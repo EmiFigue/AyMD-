@@ -1,18 +1,18 @@
 ---
-title: "Riesgos y Supuestos"
+title: "Lista de Riesgos y Supuestos"
 ---
 
-## Supuestos
+Proyecto de Mejora de asistencia.
+Lista de supuestos y riesgos.
 
-- **Disponibilidad de Modelos Abiertos:** Se asume que se podrá estudiar e implementar los modelos predictivos abiertos que forman parte del análisis de datos deportivos de la MLB para replicar sus resultados, primero en nuestro equipo y, en el futuro, en la LMB.
-- **Factibilidad de Infraestructura (DW):** Se da por sentado que se podrá implementar un Data Warehouse (DW) que permita normalizar la captura de datos históricos del estadio y los futuros datos del equipo para consumirlos en un dashboard interactivo de Marketing.
+- **La implementación de captura de los datos de los aficionados fantasma:**
+  La captura de datos transaccionales y demográficos que se realiza en el boletaje por parte de la empresa Ticketmaster no asegura una captura de datos óptima para nuestros modelos y objetivos de minería de datos. Es por ello, que se propone realizar una captura de datos siguiendo el método probado por la Liga de Futbol Mexicana, el llamado Fan ID, y así poder registrar quiénes, cómo, cuándo y cuántos usuarios entran, compran y salen del Estadio Alfredo Harp Helú. De no ser posible el desarrollo se propondría otras opciones.
 
-## Riesgos Específicos del Proyecto y Mitigaciones
+- **El desarrollo del modelo predictivo:**
+  Se intentará implementar los modelos predictivos abiertos que forman parte del análisis de datos deportivos de la asociación MLB, y así poder replicar sus resultados, primero, en nuestro equipo y en un futuro cercano, en la LMB. De no regresar los resultados esperados, se desarrollará un modelo propio en busca de poder replicar o acercar datos similares y que puedan utilizarse en la mejora de asistencia del Estadio.
 
-### Riesgo 1: Calidad y disponibilidad insuficiente de datos del "Aficionado Fantasma"
-La captura de datos transaccionales y demográficos que actualmente realiza Ticketmaster se centra solo en el comprador primario, lo que podría no asegurar una calidad de datos óptima y suficiente para correr los modelos de segmentación planeados para los acompañantes.
-* **Mitigación Propuesta:** Proponer y explorar la implementación de una captura de datos siguiendo el método probado por la Liga de Fútbol Mexicana (Fan ID), para poder registrar directamente quiénes, cómo, cuándo y cuántos usuarios entran, compran y salen del estadio.
+- **Data Warehouse:**
+  Se implementará un DW para normalizar la captura de datos históricos del estadio Alfredo Harp Helú y así mismo la captura de los futuros datos del equipo y del mismo.
 
-### Riesgo 2: Transferibilidad de modelos de la MLB a la LMB
-Que los modelos predictivos generados a partir de los datos deportivos abiertos de la MLB no arrojen los resultados esperados aplicados al entorno del equipo local.
-* **Mitigación Propuesta:** Si los resultados de la tropicalización fallan, se desarrollará un modelo propio iterativo desde cero en busca de poder encontrar variables más correlacionadas con el mercado y la asistencia particular del Estadio Alfredo Harp Helú.
+- **Dashboard interactivo abierto:**
+  Para los canales de Marketing y se puedan utilizar sus herramientas para combatir la baja asistencia de ciertos juegos en base al modelo predictivo.

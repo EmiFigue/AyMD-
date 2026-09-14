@@ -1,0 +1,65 @@
+/*-- scss:defaults --*/
+// Paleta "beisbolera" inspirada en los Diablos Rojos del México
+$primary: #c8102e;      // rojo Diablos
+$secondary: #0c2340;    // azul marino
+$body-bg: #fffdf7;      // blanco crema (pelota / campo)
+$body-color: #202a33;
+$link-color: #c8102e;
+$link-hover-color: #8c0b20;
+$navbar-bg: #0c2340;
+$navbar-fg: #ffffff;
+$navbar-hl: #ffd166;    // dorado tipo costura
+$footer-bg: #0c2340;
+$footer-fg: #ffffff;
+$headings-color: #0c2340;
+$headings-font-weight: 700;
+$table-border-color: #e8dcc8;
+$font-family-sans-serif: "Trebuchet MS", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+/*-- scss:rules --*/
+.navbar {
+  border-bottom: 4px solid $primary;
+}
+
+.navbar-brand {
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+h2 {
+  border-bottom: 2px solid rgba($primary, 0.35);
+  padding-bottom: 0.35rem;
+}
+
+table thead th {
+  background-color: $secondary;
+  color: #ffffff;
+}
+
+a.btn-primary {
+  background-color: $primary;
+  border-color: $primary;
+  color: #ffffff;
+
+  &:hover {
+    background-color: $link-hover-color;
+    border-color: $link-hover-color;
+    color: #ffffff;
+  }
+}
+
+blockquote {
+  border-left: 4px solid $primary;
+  background-color: rgba($primary, 0.06);
+  padding: 0.6rem 0.9rem;
+  border-radius: 0.25rem;
+}
+
+hr {
+  border-top: 2px dashed rgba($primary, 0.5);
+  opacity: 1;
+}
+
+.quarto-title-banner {
+  border-bottom: 4px solid $primary;
+}

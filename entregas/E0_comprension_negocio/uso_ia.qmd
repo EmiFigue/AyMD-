@@ -8,8 +8,14 @@ title: "Documentación de Uso de Herramientas de IA"
 - **Prompts empleados (resumen):** Se pidió una búsqueda y resumen sobre la historia de los Diablos Rojos del México, su estadio Alfredo Harp Helú y el comportamiento histórico de su afición.
 - **Qué se hizo con la salida:** La información se usó únicamente como contexto general de fondo para entender mejor el problema de negocio (no se copió texto textual). Se verificó contra las fuentes citadas por la IA antes de dar por válidos los datos.
 
-## 2. Consolidación de Formatos para Quarto y OpenCode
+## 2.Entrevista simulada con Stakeholders
 - **Herramienta utilizada:** Gemini (Google).
-- **Tarea para la cual se usó:** Procesar documentos en bruto (minuta, modelo de negocio, preguntas de investigación, riesgos y supuestos) y transformarlos en la estructura estandarizada de archivos Markdown (`.qmd`) requerida por Quarto. También se le solicitó generar las instrucciones operativas (prompt) para desplegar el sitio con OpenCode.
-- **Prompts empleados (resumen):** "Traduce todos nuestros documentos en los archivos necesitados para quarto y dame un prompt para que open code pueda organizar, escribir los documentos y desplegar la pagina, registra de manera resumida: https://share.gemini.google/Nd9Uepjwwnzj esta conversacion en la bitacora de ia".
-- **Qué se hizo con la salida:** Las salidas fueron transformadas automáticamente por Gemini a código Markdown/YML. El equipo humano descarga, inspecciona los archivos generados en un repositorio Quarto para asegurar que no se omita la información real del dominio y sube todo a GitHub Pages mediante OpenCode.
+- **Tarea para la cual se usó:**Simular la entrevista con el stakeholder consultando fuentes necesarias
+- **Prompts empleados (resumen):** "Quiero que me ayudes a simular una videoconferencia con un stakeholder para un proyecto para mejorar la asistencia en el estadio AHH de beisbol en la CDMX. Responde a todas las preguntas agregando citas de fuentes verificables. Nombre y Rol del Stakeholder: Director Comercial (CCO) - Diablos Rojos del México.".
+- **Qué se hizo con la salida:** Se revisaron las fuentes y se concluye los requisitos verdaderos para el proyecto
+
+## 3. Estilo "Beisbolero" del Sitio Quarto
+- **Herramienta utilizada:** OpenCode (agente de IA en terminal).
+- **Tarea para la cual se usó:** Diseñar e implementar un estilo visual con identidad beisbolera para el sitio Quarto, aprovechando las posibilidades de personalización que ofrece Quarto (tema base, archivo SCSS, logo y favicon).
+- **Prompts empleados (resumen):** "Monta un sitio e Quarto usando los .qmd proprcionados y la estructura establecida.Agrega (dentro de las posibilidades de quarto) un estilo beisbolero, registra esta interaccion en la bitacora uso IA".
+- **Qué se hizo con la salida:** Se generó un tema SCSS personalizado (`styles.scss`) con la paleta rojo/azul marino inspirada en los Diablos Rojos del México y fondo blanco crema, un logo y favicon SVG de una pelota de béisbol, y se registró todo en `_quarto.yml` (tema, logo, banner de título y pie de página). El equipo revisó el resultado y compiló el sitio.
