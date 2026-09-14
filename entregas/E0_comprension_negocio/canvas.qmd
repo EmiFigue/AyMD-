@@ -1,0 +1,13 @@
+---
+title: "Business Understanding Canvas"
+---
+
+| Componente | Descripción |
+|:---|:---|
+| **Objetivo de Negocio** | Dashboard interactivo que permitirá implementar precios dinámicos en taquilla, lanzar promociones hiper-segmentadas para llenar el estadio en días de baja demanda, y optimizar el inventario de alimentos perecederos. |
+| **Objetivo de Minería de Datos** | Transformar la información histórica del Estadio Alfredo Harp Helú en estrategias comerciales ejecutables mediante predicción de asistencia. |
+| **Stakeholders y Beneficiarios** | - Director Comercial del equipo Diablos Rojos de México (CCO) <br> - Diablos Rojos de México <br> - Liga Mexicana de Beisbol |
+| **Situación Actual / Dolor** | El equipo enfrenta fluctuaciones severas de demanda y el fenómeno de abonados que no asisten, lo cual representa una fuga de ingresos tanto en taquilla como en esquilmos. |
+| **Restricciones y Recursos** | **Restricciones:** Aficionado fantasma (70% sin identificar), movilidad dentro del recinto y abandono del mismo. <br> **Recursos:** Captura de información del comprador principal a través de Ticketmaster, control de accesos en torniquetes y perfiles enriquecidos de abonados (Pase Diablo). |
+| **Criterio de Éxito** | - Incrementar el promedio de asistencia en días valle a un rango sostenido de 9,500 a 10,000 aficionados. <br> - Aumentar en un 15% el gasto per cápita en alimentos, bebidas y mercancía oficial durante esos juegos. <br> - Elevar la tasa de captura de datos en el CRM para identificar al 55-60% de los asistentes totales. |
+| **Riesgos Principales** | - La percepción de seguridad en los alrededores del estadio. <br> - El poco interés general ante juegos contra rivales menores y en un horario no óptimo. |

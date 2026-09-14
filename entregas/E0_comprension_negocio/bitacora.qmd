@@ -1,0 +1,38 @@
+---
+title: "Bitácora de la Reunión con el Stakeholder"
+---
+## Detalles de la Reunión
+- **Fecha:** 12 de septiembre de 2026
+- **Modalidad:** Videoconferencia (Simulada)
+- **Stakeholder:** Director Comercial (CCO) - Diablos Rojos del México
+- **Fuente:** Simulación basada en el histórico de asistencia del Estadio AHH utilizando el modelo Gemini (LLM de Google).
+
+## Intervenciones y Respuestas Clave
+
+### 1. Identificación del Problema Principal
+**Pregunta:** Como Director Comercial, sabiendo que el estadio ha roto récords anuales, ¿cuál es el problema o 'punto ciego' más grande que tiene el equipo actualmente respecto a la asistencia en juegos específicos?
+
+**Respuesta:** El mayor obstáculo son los juegos entre semana (martes a jueves) y la percepción de seguridad. Aunque el promedio general rompió récord (14,443 aficionados por juego), los juegos entre semana caen a 6,000 asistentes, obligando a reducir precios. La inseguridad exterior afecta a los asistentes que salen tarde.
+
+### 2. Infraestructura de Datos y Puntos Ciegos
+**Pregunta:** ¿Qué información recolectan actualmente del aficionado y qué dato sienten que les falta?
+
+**Respuesta:** Existen tres puntos ciegos críticos:
+- **El 'Aficionado Fantasma':** Se desconoce la identidad del 70% de las personas en el estadio (los acompañantes).
+- **Trazabilidad del Consumo:** Sistemas de punto de venta no están vinculados al boleto, impidiendo calcular el Lifetime Value.
+- **Movilidad y Abandono:** No se registra la hora de salida ni medio de transporte.
+
+### 3. Capacidad Operativa y Mitigación
+**Pregunta:** Si un algoritmo advierte que un juego tendrá solo 35% de asistencia, ¿qué acciones ejecutarían con 48 hrs de anticipación?
+
+**Respuesta:**
+- **Marketing:** Lanzamiento de Flash Sales dirigidas.
+- **Operaciones:** Cierre de zonas lejanas para ahorrar limpieza/seguridad y reubicar aficionados (mejora en transmisiones).
+- **Consumo:** Activación de promociones tempranas (Happy Hour).
+- **Seguridad:** Alianzas con plataformas de movilidad para dar códigos de descuento a la salida.
+
+## Reflexión del Equipo
+Tras la entrevista, nuestro entendimiento del problema cambió: inicialmente creíamos que se trataba de aumentar la asistencia general, pero ahora comprendemos que el verdadero problema es la alta varianza en juegos valle (entre semana) y el alto porcentaje de asistentes anónimos. Un modelo predictivo tiene mucho sentido aquí porque permite tomar decisiones de operaciones y marketing rápidas y focalizadas en ventanas de 48 horas.
+
+## Fuentes de la Simulación
+Las referencias que respaldan los datos citados en esta simulación (récord de asistencia, precios, propiedad del estadio y participación en el Mundial de 2026) se encuentran documentadas en [Fuentes y Referencias](fuentes.qmd).

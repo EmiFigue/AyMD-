@@ -1,0 +1,21 @@
+---
+title: "Preguntas de Investigación"
+---
+
+Para nuestro proyecto de Mejora de Asistencia del Estadio Alfredo Harp Helú, definimos las siguientes 4 preguntas, ordenadas de la más a la menos prioritaria. Cada una está pensada para responderse con una técnica específica de minería de datos.
+
+### 1. ¿Qué variables predicen mejor la asistencia de un juego con al menos 48 horas de anticipación?
+Queremos saber si con datos como el rival, el día de la semana, el clima y el precio del boleto se puede predecir cuántas personas van a ir a un juego. Esto le serviría al equipo comercial para tomar decisiones (como lanzar promociones) con tiempo suficiente.
+* **Tarea de minería de datos:** Regresión (predecir un número: la asistencia esperada).
+
+### 2. ¿Se pueden identificar perfiles distintos dentro del "aficionado fantasma" (el 70% de la gente que no está identificada) a partir de sus patrones de consumo?
+Actualmente no se sabe quién es la mayoría de la gente que entra al estadio, solo se conoce al comprador principal del boleto. Queremos ver si agrupando a la gente por lo que compra (comida, bebidas, mercancía) se pueden encontrar tipos de aficionados parecidos entre sí.
+* **Tarea de minería de datos:** Segmentación / Clustering.
+
+### 3. ¿Qué juegos tienen mayor riesgo de no alcanzar la meta de 9,500 a 10,000 asistentes en días entre semana?
+Nos interesa poder marcar con anticipación qué juegos están "en riesgo" de tener poca gente, para que el equipo pueda actuar a tiempo con marketing o promociones.
+* **Tarea de minería de datos:** Clasificación (etiquetar cada juego como "en riesgo" o "no en riesgo").
+
+### 4. ¿Qué factores están relacionados con un mayor gasto por persona en comida, bebida y mercancía?
+Esto ayudaría a diseñar mejor las promociones (como el Happy Hour) para aumentar lo que gasta cada aficionado dentro del estadio, sobre todo en los juegos de baja asistencia.
+* **Tarea de minería de datos:** Regresión / análisis de correlación.

@@ -1,0 +1,17 @@
+---
+title: "Fuentes y Referencias"
+---
+
+Referencias que respaldan la simulación de la entrevista y los datos citados en la entrega **E0: Comprensión del Negocio**. La numeración corresponde a la minuta original del equipo.
+
+5. **Liga Mexicana de Beisbol (LMB)** (2025). *Diablos Rojos hace historia y rompe récord de asistencia*.
+   URL: <https://lmb.com.mx/noticias/diablos-rojos-hace-historia-y-rompe-record-de-asistencia>
+
+6. **OEM (Esto)** (2025). *Diablos Rojos del México confirma que se sumará al Mundial de 2026...*.
+   URL: <https://oem.com.mx/esto/beisbol/diablos-rojos-del-mexico-confirma-que-se-sumara-al-mundial-de-2026-cual-es-el-plan-27648719>
+
+7. **Expansión** (2026). *¿Quién es el dueño del Estadio Alfredo Harp Helú, casa de los Diablos Rojos?*.
+   URL: <https://expansion.mx/tendencias/2026/08/04/quien-es-dueno-estadio-alfredo-harp-helu-casa-diablos-rojos>
+
+8. **La Silla Rota** (2025). *Estadio Harp Helú: ¿cuánto cuesta ir a ver a los Diablos Rojos del México?*.
+   URL: <https://lasillarota.com/dinero/2025/8/2/estadio-harp-helu-cuanto-cuesta-ir-ver-los-diablos-rojos-del-mexico-460014.html>

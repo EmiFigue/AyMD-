@@ -1,0 +1,7 @@
+---
+title: "Proyecto Integrador - Minería de Datos"
+---
+# Comprensión del Negocio (E0)
+Bienvenido al repositorio del proyecto de Mejora de Asistencia del Estadio Alfredo Harp Helú (Diablos Rojos).
+
+Utiliza el menú de navegación superior para acceder a los entregables correspondientes a la fase **E0: Business Understanding** de la metodología CRISP-DM.

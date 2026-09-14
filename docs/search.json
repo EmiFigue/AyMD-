@@ -1,0 +1,114 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Proyecto Integrador - Minería de Datos",
+    "section": "",
+    "text": "Comprensión del Negocio (E0)\nBienvenido al repositorio del proyecto de Mejora de Asistencia del Estadio Alfredo Harp Helú (Diablos Rojos).\nUtiliza el menú de navegación superior para acceder a los entregables correspondientes a la fase E0: Business Understanding de la metodología CRISP-DM."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/uso_ia.html",
+    "href": "entregas/E0_comprension_negocio/uso_ia.html",
+    "title": "Documentación de Uso de Herramientas de IA",
+    "section": "",
+    "text": "Herramienta utilizada: Claude (Anthropic), vía chat web.\nTarea para la cual se usó: Entender el contexto histórico y de afición de los Diablos Rojos del México (origen del equipo, estadio, tamaño y comportamiento de su afición), ya que algunos integrantes no tenían conocimiento previo de béisbol ni del club.\nPrompts empleados (resumen): Se pidió una búsqueda y resumen sobre la historia de los Diablos Rojos del México, su estadio Alfredo Harp Helú y el comportamiento histórico de su afición.\nQué se hizo con la salida: La información se usó únicamente como contexto general de fondo para entender mejor el problema de negocio (no se copió texto textual). Se verificó contra las fuentes citadas por la IA antes de dar por válidos los datos."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/uso_ia.html#contexto-histórico-del-stakeholder",
+    "href": "entregas/E0_comprension_negocio/uso_ia.html#contexto-histórico-del-stakeholder",
+    "title": "Documentación de Uso de Herramientas de IA",
+    "section": "",
+    "text": "Herramienta utilizada: Claude (Anthropic), vía chat web.\nTarea para la cual se usó: Entender el contexto histórico y de afición de los Diablos Rojos del México (origen del equipo, estadio, tamaño y comportamiento de su afición), ya que algunos integrantes no tenían conocimiento previo de béisbol ni del club.\nPrompts empleados (resumen): Se pidió una búsqueda y resumen sobre la historia de los Diablos Rojos del México, su estadio Alfredo Harp Helú y el comportamiento histórico de su afición.\nQué se hizo con la salida: La información se usó únicamente como contexto general de fondo para entender mejor el problema de negocio (no se copió texto textual). Se verificó contra las fuentes citadas por la IA antes de dar por válidos los datos."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/uso_ia.html#consolidación-de-formatos-para-quarto-y-opencode",
+    "href": "entregas/E0_comprension_negocio/uso_ia.html#consolidación-de-formatos-para-quarto-y-opencode",
+    "title": "Documentación de Uso de Herramientas de IA",
+    "section": "2. Consolidación de Formatos para Quarto y OpenCode",
+    "text": "2. Consolidación de Formatos para Quarto y OpenCode\n\nHerramienta utilizada: Gemini (Google).\nTarea para la cual se usó: Procesar documentos en bruto (minuta, modelo de negocio, preguntas de investigación, riesgos y supuestos) y transformarlos en la estructura estandarizada de archivos Markdown (.qmd) requerida por Quarto. También se le solicitó generar las instrucciones operativas (prompt) para desplegar el sitio con OpenCode.\nPrompts empleados (resumen): “Traduce todos nuestros documentos en los archivos necesitados para quarto y dame un prompt para que open code pueda organizar, escribir los documentos y desplegar la pagina, registra de manera resumida: https://share.gemini.google/Nd9Uepjwwnzj esta conversacion en la bitacora de ia”.\nQué se hizo con la salida: Las salidas fueron transformadas automáticamente por Gemini a código Markdown/YML. El equipo humano descarga, inspecciona los archivos generados en un repositorio Quarto para asegurar que no se omita la información real del dominio y sube todo a GitHub Pages mediante OpenCode."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/criterio_exito.html",
+    "href": "entregas/E0_comprension_negocio/criterio_exito.html",
+    "title": "Criterio de Éxito en Términos de Negocio",
+    "section": "",
+    "text": "El éxito del proyecto se medirá al finalizar la temporada regular mediante los siguientes tres KPIs fundamentales:\n\nAumento de asistencia en días valle: Incrementar el promedio de asistencia en días valle (martes a jueves) a un rango sostenido de 9,500 a 10,000 aficionados.\n\nRelación con métrica técnica futura: Esto se apoyará en una métrica de precisión (por ejemplo, reducir el MAE o RMSE del modelo de regresión predictivo) para que las proyecciones disparen alertas comerciales certeras a las 48 horas.\n\nIncremento del ticket promedio: Aumentar en un 15% el gasto per cápita en alimentos, bebidas y mercancía oficial durante esos juegos.\n\nRelación con métrica técnica futura: Una correcta separación en el modelo de clustering nos permitirá medir el Silhouette Score para definir la claridad de nuestros segmentos e incidir sobre la oferta que reciben.\n\nDes-anonimización del aficionado: Elevar la tasa de captura de datos en el CRM para identificar al 55-60% de los asistentes totales (y no solo al comprador principal)."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/canvas.html",
+    "href": "entregas/E0_comprension_negocio/canvas.html",
+    "title": "Business Understanding Canvas",
+    "section": "",
+    "text": "Componente\nDescripción\n\n\n\n\nObjetivo de Negocio\nDashboard interactivo que permitirá implementar precios dinámicos en taquilla, lanzar promociones hiper-segmentadas para llenar el estadio en días de baja demanda, y optimizar el inventario de alimentos perecederos.\n\n\nObjetivo de Minería de Datos\nTransformar la información histórica del Estadio Alfredo Harp Helú en estrategias comerciales ejecutables mediante predicción de asistencia.\n\n\nStakeholders y Beneficiarios\n- Director Comercial del equipo Diablos Rojos de México (CCO)  - Diablos Rojos de México  - Liga Mexicana de Beisbol\n\n\nSituación Actual / Dolor\nEl equipo enfrenta fluctuaciones severas de demanda y el fenómeno de abonados que no asisten, lo cual representa una fuga de ingresos tanto en taquilla como en esquilmos.\n\n\nRestricciones y Recursos\nRestricciones: Aficionado fantasma (70% sin identificar), movilidad dentro del recinto y abandono del mismo.  Recursos: Captura de información del comprador principal a través de Ticketmaster, control de accesos en torniquetes y perfiles enriquecidos de abonados (Pase Diablo).\n\n\nCriterio de Éxito\n- Incrementar el promedio de asistencia en días valle a un rango sostenido de 9,500 a 10,000 aficionados.  - Aumentar en un 15% el gasto per cápita en alimentos, bebidas y mercancía oficial durante esos juegos.  - Elevar la tasa de captura de datos en el CRM para identificar al 55-60% de los asistentes totales.\n\n\nRiesgos Principales\n- La percepción de seguridad en los alrededores del estadio.  - El poco interés general ante juegos contra rivales menores y en un horario no óptimo."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/bitacora.html",
+    "href": "entregas/E0_comprension_negocio/bitacora.html",
+    "title": "Bitácora de la Reunión con el Stakeholder",
+    "section": "",
+    "text": "Fecha: 12 de septiembre de 2026\nModalidad: Videoconferencia (Simulada)\nStakeholder: Director Comercial (CCO) - Diablos Rojos del México\nFuente: Simulación basada en el histórico de asistencia del Estadio AHH utilizando el modelo Gemini (LLM de Google)."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/bitacora.html#detalles-de-la-reunión",
+    "href": "entregas/E0_comprension_negocio/bitacora.html#detalles-de-la-reunión",
+    "title": "Bitácora de la Reunión con el Stakeholder",
+    "section": "",
+    "text": "Fecha: 12 de septiembre de 2026\nModalidad: Videoconferencia (Simulada)\nStakeholder: Director Comercial (CCO) - Diablos Rojos del México\nFuente: Simulación basada en el histórico de asistencia del Estadio AHH utilizando el modelo Gemini (LLM de Google)."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/bitacora.html#intervenciones-y-respuestas-clave",
+    "href": "entregas/E0_comprension_negocio/bitacora.html#intervenciones-y-respuestas-clave",
+    "title": "Bitácora de la Reunión con el Stakeholder",
+    "section": "Intervenciones y Respuestas Clave",
+    "text": "Intervenciones y Respuestas Clave\n\n1. Identificación del Problema Principal\nPregunta: Como Director Comercial, sabiendo que el estadio ha roto récords anuales, ¿cuál es el problema o ‘punto ciego’ más grande que tiene el equipo actualmente respecto a la asistencia en juegos específicos?\nRespuesta: El mayor obstáculo son los juegos entre semana (martes a jueves) y la percepción de seguridad. Aunque el promedio general rompió récord (14,443 aficionados por juego), los juegos entre semana caen a 6,000 asistentes, obligando a reducir precios. La inseguridad exterior afecta a los asistentes que salen tarde.\n\n\n2. Infraestructura de Datos y Puntos Ciegos\nPregunta: ¿Qué información recolectan actualmente del aficionado y qué dato sienten que les falta?\nRespuesta: Existen tres puntos ciegos críticos: - El ‘Aficionado Fantasma’: Se desconoce la identidad del 70% de las personas en el estadio (los acompañantes). - Trazabilidad del Consumo: Sistemas de punto de venta no están vinculados al boleto, impidiendo calcular el Lifetime Value. - Movilidad y Abandono: No se registra la hora de salida ni medio de transporte.\n\n\n3. Capacidad Operativa y Mitigación\nPregunta: Si un algoritmo advierte que un juego tendrá solo 35% de asistencia, ¿qué acciones ejecutarían con 48 hrs de anticipación?\nRespuesta: - Marketing: Lanzamiento de Flash Sales dirigidas. - Operaciones: Cierre de zonas lejanas para ahorrar limpieza/seguridad y reubicar aficionados (mejora en transmisiones). - Consumo: Activación de promociones tempranas (Happy Hour). - Seguridad: Alianzas con plataformas de movilidad para dar códigos de descuento a la salida."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/bitacora.html#reflexión-del-equipo",
+    "href": "entregas/E0_comprension_negocio/bitacora.html#reflexión-del-equipo",
+    "title": "Bitácora de la Reunión con el Stakeholder",
+    "section": "Reflexión del Equipo",
+    "text": "Reflexión del Equipo\nTras la entrevista, nuestro entendimiento del problema cambió: inicialmente creíamos que se trataba de aumentar la asistencia general, pero ahora comprendemos que el verdadero problema es la alta varianza en juegos valle (entre semana) y el alto porcentaje de asistentes anónimos. Un modelo predictivo tiene mucho sentido aquí porque permite tomar decisiones de operaciones y marketing rápidas y focalizadas en ventanas de 48 horas."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/bitacora.html#fuentes-de-la-simulación",
+    "href": "entregas/E0_comprension_negocio/bitacora.html#fuentes-de-la-simulación",
+    "title": "Bitácora de la Reunión con el Stakeholder",
+    "section": "Fuentes de la Simulación",
+    "text": "Fuentes de la Simulación\nLas referencias que respaldan los datos citados en esta simulación (récord de asistencia, precios, propiedad del estadio y participación en el Mundial de 2026) se encuentran documentadas en Fuentes y Referencias."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/preguntas.html",
+    "href": "entregas/E0_comprension_negocio/preguntas.html",
+    "title": "Preguntas de Investigación",
+    "section": "",
+    "text": "Para nuestro proyecto de Mejora de Asistencia del Estadio Alfredo Harp Helú, definimos las siguientes 4 preguntas, ordenadas de la más a la menos prioritaria. Cada una está pensada para responderse con una técnica específica de minería de datos.\n\n1. ¿Qué variables predicen mejor la asistencia de un juego con al menos 48 horas de anticipación?\nQueremos saber si con datos como el rival, el día de la semana, el clima y el precio del boleto se puede predecir cuántas personas van a ir a un juego. Esto le serviría al equipo comercial para tomar decisiones (como lanzar promociones) con tiempo suficiente. * Tarea de minería de datos: Regresión (predecir un número: la asistencia esperada).\n\n\n2. ¿Se pueden identificar perfiles distintos dentro del “aficionado fantasma” (el 70% de la gente que no está identificada) a partir de sus patrones de consumo?\nActualmente no se sabe quién es la mayoría de la gente que entra al estadio, solo se conoce al comprador principal del boleto. Queremos ver si agrupando a la gente por lo que compra (comida, bebidas, mercancía) se pueden encontrar tipos de aficionados parecidos entre sí. * Tarea de minería de datos: Segmentación / Clustering.\n\n\n3. ¿Qué juegos tienen mayor riesgo de no alcanzar la meta de 9,500 a 10,000 asistentes en días entre semana?\nNos interesa poder marcar con anticipación qué juegos están “en riesgo” de tener poca gente, para que el equipo pueda actuar a tiempo con marketing o promociones. * Tarea de minería de datos: Clasificación (etiquetar cada juego como “en riesgo” o “no en riesgo”).\n\n\n4. ¿Qué factores están relacionados con un mayor gasto por persona en comida, bebida y mercancía?\nEsto ayudaría a diseñar mejor las promociones (como el Happy Hour) para aumentar lo que gasta cada aficionado dentro del estadio, sobre todo en los juegos de baja asistencia. * Tarea de minería de datos: Regresión / análisis de correlación."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/riesgos_supuestos.html",
+    "href": "entregas/E0_comprension_negocio/riesgos_supuestos.html",
+    "title": "Riesgos y Supuestos",
+    "section": "",
+    "text": "Disponibilidad de Modelos Abiertos: Se asume que se podrá estudiar e implementar los modelos predictivos abiertos que forman parte del análisis de datos deportivos de la MLB para replicar sus resultados, primero en nuestro equipo y, en el futuro, en la LMB.\nFactibilidad de Infraestructura (DW): Se da por sentado que se podrá implementar un Data Warehouse (DW) que permita normalizar la captura de datos históricos del estadio y los futuros datos del equipo para consumirlos en un dashboard interactivo de Marketing."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/riesgos_supuestos.html#supuestos",
+    "href": "entregas/E0_comprension_negocio/riesgos_supuestos.html#supuestos",
+    "title": "Riesgos y Supuestos",
+    "section": "",
+    "text": "Disponibilidad de Modelos Abiertos: Se asume que se podrá estudiar e implementar los modelos predictivos abiertos que forman parte del análisis de datos deportivos de la MLB para replicar sus resultados, primero en nuestro equipo y, en el futuro, en la LMB.\nFactibilidad de Infraestructura (DW): Se da por sentado que se podrá implementar un Data Warehouse (DW) que permita normalizar la captura de datos históricos del estadio y los futuros datos del equipo para consumirlos en un dashboard interactivo de Marketing."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/riesgos_supuestos.html#riesgos-específicos-del-proyecto-y-mitigaciones",
+    "href": "entregas/E0_comprension_negocio/riesgos_supuestos.html#riesgos-específicos-del-proyecto-y-mitigaciones",
+    "title": "Riesgos y Supuestos",
+    "section": "Riesgos Específicos del Proyecto y Mitigaciones",
+    "text": "Riesgos Específicos del Proyecto y Mitigaciones\n\nRiesgo 1: Calidad y disponibilidad insuficiente de datos del “Aficionado Fantasma”\nLa captura de datos transaccionales y demográficos que actualmente realiza Ticketmaster se centra solo en el comprador primario, lo que podría no asegurar una calidad de datos óptima y suficiente para correr los modelos de segmentación planeados para los acompañantes. * Mitigación Propuesta: Proponer y explorar la implementación de una captura de datos siguiendo el método probado por la Liga de Fútbol Mexicana (Fan ID), para poder registrar directamente quiénes, cómo, cuándo y cuántos usuarios entran, compran y salen del estadio.\n\n\nRiesgo 2: Transferibilidad de modelos de la MLB a la LMB\nQue los modelos predictivos generados a partir de los datos deportivos abiertos de la MLB no arrojen los resultados esperados aplicados al entorno del equipo local. * Mitigación Propuesta: Si los resultados de la tropicalización fallan, se desarrollará un modelo propio iterativo desde cero en busca de poder encontrar variables más correlacionadas con el mercado y la asistencia particular del Estadio Alfredo Harp Helú."
+  },
+  {
+    "objectID": "entregas/E0_comprension_negocio/fuentes.html",
+    "href": "entregas/E0_comprension_negocio/fuentes.html",
+    "title": "Fuentes y Referencias",
+    "section": "",
+    "text": "Referencias que respaldan la simulación de la entrevista y los datos citados en la entrega E0: Comprensión del Negocio. La numeración corresponde a la minuta original del equipo.\n\nLiga Mexicana de Beisbol (LMB) (2025). Diablos Rojos hace historia y rompe récord de asistencia. URL: https://lmb.com.mx/noticias/diablos-rojos-hace-historia-y-rompe-record-de-asistencia\nOEM (Esto) (2025). Diablos Rojos del México confirma que se sumará al Mundial de 2026…. URL: https://oem.com.mx/esto/beisbol/diablos-rojos-del-mexico-confirma-que-se-sumara-al-mundial-de-2026-cual-es-el-plan-27648719\nExpansión (2026). ¿Quién es el dueño del Estadio Alfredo Harp Helú, casa de los Diablos Rojos?. URL: https://expansion.mx/tendencias/2026/08/04/quien-es-dueno-estadio-alfredo-harp-helu-casa-diablos-rojos\nLa Silla Rota (2025). Estadio Harp Helú: ¿cuánto cuesta ir a ver a los Diablos Rojos del México?. URL: https://lasillarota.com/dinero/2025/8/2/estadio-harp-helu-cuanto-cuesta-ir-ver-los-diablos-rojos-del-mexico-460014.html"
+  }
+]
