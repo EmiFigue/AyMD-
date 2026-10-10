@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>E1 · Fuentes de datos – Proyecto Minería de Datos</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/baseball.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-fb70c40dc7482c689762369618a42d12.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner h1,
+      .quarto-title-block .quarto-title-banner h2,
+      .quarto-title-block .quarto-title-banner h3,
+      .quarto-title-block .quarto-title-banner h4,
+      .quarto-title-block .quarto-title-banner h5,
+      .quarto-title-block .quarto-title-banner h6
+      {
+        color: #ffffff;
+      }
+
+      .quarto-title-block .quarto-title-banner {
+        color: #ffffff;
+background: #0c2340;
+      }
+</style>
+<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/baseball.svg" alt="Pelota de béisbol" class="navbar-logo light-content">
+    <img src="../../images/baseball.svg" alt="Pelota de béisbol" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Proyecto Minería de Datos</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-e0-negocio" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">E0: Negocio</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-e0-negocio">    
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/bitacora.html">
+ <span class="dropdown-text">Bitácora</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/canvas.html">
+ <span class="dropdown-text">Canvas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/preguntas.html">
+ <span class="dropdown-text">Preguntas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/criterio_exito.html">
+ <span class="dropdown-text">Criterio Éxito</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/riesgos_supuestos.html">
+ <span class="dropdown-text">Riesgos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/fuentes.html">
+ <span class="dropdown-text">Fuentes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/uso_ia.html">
+ <span class="dropdown-text">Uso IA</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-e1-arquitectura-dw" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">E1: Arquitectura DW</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-e1-arquitectura-dw">    
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/fuentes.html">
+ <span class="dropdown-text">Fuentes de Datos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/arquitectura.html">
+ <span class="dropdown-text">Arquitectura 3 Capas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/estrella.html">
+ <span class="dropdown-text">Esquema Estrella</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/trazabilidad.html">
+ <span class="dropdown-text">Trazabilidad</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/pivote.html">
+ <span class="dropdown-text">Pivote por Datos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/uso_ia.html">
+ <span class="dropdown-text">Uso IA</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">E1 · Fuentes de datos</h1>
+            <p class="subtitle lead">Búsqueda documentada, catálogo verificado y análisis de integración</p>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#punto-de-partida-e0" id="toc-punto-de-partida-e0" class="nav-link active" data-scroll-target="#punto-de-partida-e0">Punto de partida (E0)</a></li>
+  <li><a href="#proceso-de-búsqueda" id="toc-proceso-de-búsqueda" class="nav-link" data-scroll-target="#proceso-de-búsqueda">Proceso de búsqueda</a></li>
+  <li><a href="#fuentes-candidatas-evaluadas" id="toc-fuentes-candidatas-evaluadas" class="nav-link" data-scroll-target="#fuentes-candidatas-evaluadas">Fuentes candidatas evaluadas</a></li>
+  <li><a href="#catálogo-de-fuentes" id="toc-catálogo-de-fuentes" class="nav-link" data-scroll-target="#catálogo-de-fuentes">Catálogo de fuentes</a>
+  <ul class="collapse">
+  <li><a href="#f1-mlb-stats-api-liga-mexicana-de-béisbol" id="toc-f1-mlb-stats-api-liga-mexicana-de-béisbol" class="nav-link" data-scroll-target="#f1-mlb-stats-api-liga-mexicana-de-béisbol">F1 · MLB Stats API — Liga Mexicana de Béisbol</a></li>
+  <li><a href="#f2-afluencia-diaria-del-metro-cdmx-desglosada" id="toc-f2-afluencia-diaria-del-metro-cdmx-desglosada" class="nav-link" data-scroll-target="#f2-afluencia-diaria-del-metro-cdmx-desglosada">F2 · Afluencia diaria del Metro CDMX (desglosada)</a></li>
+  <li><a href="#f3-noaa-global-surface-summary-of-the-day-gsod" id="toc-f3-noaa-global-surface-summary-of-the-day-gsod" class="nav-link" data-scroll-target="#f3-noaa-global-surface-summary-of-the-day-gsod">F3 · NOAA Global Surface Summary of the Day (GSOD)</a></li>
+  <li><a href="#f4-carpetas-de-investigación-de-la-fgj-de-la-ciudad-de-méxico" id="toc-f4-carpetas-de-investigación-de-la-fgj-de-la-ciudad-de-méxico" class="nav-link" data-scroll-target="#f4-carpetas-de-investigación-de-la-fgj-de-la-ciudad-de-méxico">F4 · Carpetas de investigación de la FGJ de la Ciudad de México</a></li>
+  </ul></li>
+  <li><a href="#análisis-de-integración" id="toc-análisis-de-integración" class="nav-link" data-scroll-target="#análisis-de-integración">Análisis de integración</a>
+  <ul class="collapse">
+  <li><a href="#problemas-anticipados-se-documentan-aquí-se-resuelven-en-la-fase-de-preparación" id="toc-problemas-anticipados-se-documentan-aquí-se-resuelven-en-la-fase-de-preparación" class="nav-link" data-scroll-target="#problemas-anticipados-se-documentan-aquí-se-resuelven-en-la-fase-de-preparación">Problemas anticipados (se documentan aquí; se resuelven en la fase de preparación)</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="punto-de-partida-e0" class="level2">
+<h2 class="anchored" data-anchor-id="punto-de-partida-e0">Punto de partida (E0)</h2>
+<p>El problema de E0 es la <strong>asistencia irregular al Estadio Alfredo Harp Helú</strong> (Diablos Rojos del México), sobre todo en los juegos de martes a jueves (<em>días valle</em>). Las preguntas de E0 reciben un identificador que se usa en todo E1:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">Pregunta de E0</th>
+<th style="text-align: left;">Tarea de minería</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>P1</strong></td>
+<td style="text-align: left;">¿Qué variables predicen mejor la asistencia de un juego con al menos 48 horas de anticipación?</td>
+<td style="text-align: left;">Regresión</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P2</strong></td>
+<td style="text-align: left;">¿Se pueden identificar perfiles dentro del “aficionado fantasma” a partir de sus patrones de consumo?</td>
+<td style="text-align: left;">Segmentación</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>P3</strong></td>
+<td style="text-align: left;">¿Qué juegos entre semana tienen mayor riesgo de no alcanzar la meta de 9,500 a 10,000 asistentes?</td>
+<td style="text-align: left;">Clasificación</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P4</strong></td>
+<td style="text-align: left;">¿Qué factores se relacionan con un mayor gasto por persona en comida, bebida y mercancía?</td>
+<td style="text-align: left;">Regresión / correlación</td>
+</tr>
+</tbody>
+</table>
+<p>Con esas preguntas, la búsqueda necesitaba: (a) asistencia <strong>por juego</strong> con fecha, rival y horario; (b) variables de contexto del día (clima, movilidad, seguridad del entorno); y (c) datos de consumo y de aficionados (P2, P4).</p>
+</section>
+<section id="proceso-de-búsqueda" class="level2">
+<h2 class="anchored" data-anchor-id="proceso-de-búsqueda">Proceso de búsqueda</h2>
+<p>La búsqueda combinó una herramienta de investigación profunda (Claude, ver <a href="../../entregas/E1_arquitectura_dw/uso_ia.html">Uso de IA</a>) con revisión directa de portales. Todas las consultas automáticas se hicieron el <strong>8 de octubre de 2026</strong>.</p>
+<table class="table-striped caption-top table">
+<caption>Bitácora de búsqueda</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">#</th>
+<th style="text-align: left;">Herramienta / portal</th>
+<th style="text-align: left;">Consulta o acción</th>
+<th style="text-align: left;">Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Claude (lectura de API)</td>
+<td style="text-align: left;"><code>statsapi.mlb.com/api/v1/sports</code> y <code>/league?sportId=23</code></td>
+<td style="text-align: left;">La Liga Mexicana aparece como liga <strong>125</strong> dentro de <em>Independent Leagues</em> (sportId 23), temporada 2026: 16-abr a 15-sep.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Claude (lectura de API)</td>
+<td style="text-align: left;"><code>/teams?sportId=23&amp;leagueIds=125&amp;season=2025</code></td>
+<td style="text-align: left;">Diablos Rojos = <strong>equipo 532</strong>; Estadio Alfredo Harp Helú = <strong>venue 5340</strong>; 20 equipos con zona Norte/Sur.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">Claude (lectura de API)</td>
+<td style="text-align: left;"><code>/schedule?...&amp;teamId=532&amp;hydrate=gameInfo,weather</code> para muestras de 2022, 2025 y 2026 (temporada regular y playoffs)</td>
+<td style="text-align: left;">Cada juego trae <strong>asistencia</strong>, hora de inicio, duración, clima al inicio, serie y doble cartelera.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">Claude (búsqueda web)</td>
+<td style="text-align: left;">“afluencia diaria Metro CDMX datos abiertos csv fecha linea estacion”</td>
+<td style="text-align: left;">Conjunto <em>Afluencia diaria del Metro CDMX</em> en datos.cdmx.gob.mx, con recursos <em>Simple</em> y <em>Desglosada</em>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">Claude (búsqueda web)</td>
+<td style="text-align: left;">“datos.cdmx.gob.mx carpetas de investigación FGJ”</td>
+<td style="text-align: left;">Conjunto <em>Carpetas de investigación FGJ de la Ciudad de México</em> (notas técnicas del portal).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">Claude (búsqueda web)</td>
+<td style="text-align: left;">“bigquery-public-data noaa_gsod stations Mexico City”</td>
+<td style="text-align: left;">Dataset público <code>bigquery-public-data.noaa_gsod</code>; la estación del AICM se identifica con el código OACI <strong>MMMX</strong>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">Claude (lectura de página)</td>
+<td style="text-align: left;">Open-Meteo <em>Historical Weather API</em></td>
+<td style="text-align: left;">API de reanálisis (ERA5/ERA5-Land) con temperatura y precipitación diarias.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">Claude (lectura de página)</td>
+<td style="text-align: left;">INEGI · ENSU</td>
+<td style="text-align: left;">Encuesta trimestral de percepción de inseguridad urbana.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">Claude (lectura de página)</td>
+<td style="text-align: left;">Wikipedia · <em>2024 Mexican Baseball League season</em></td>
+<td style="text-align: left;">Asistencia por juego <strong>solo en playoffs</strong>; no hay tabla de temporada regular.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">Claude (búsqueda web)</td>
+<td style="text-align: left;">“kaggle dataset Liga Mexicana de Beisbol LMB attendance”</td>
+<td style="text-align: left;">Sin datasets de Kaggle con asistencia de la LMB; solo notas de prensa.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">Claude (búsqueda web)</td>
+<td style="text-align: left;">“datos abiertos ventas alimentos estadio béisbol México consumo aficionados dataset” (para P2 y P4)</td>
+<td style="text-align: left;">Sin conjuntos de datos; solo notas de prensa. Ver <a href="../../entregas/E1_arquitectura_dw/pivote.html">pivote</a>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">Claude (lectura de página)</td>
+<td style="text-align: left;">Wikipedia · <em>Estadio Alfredo Harp Helú</em></td>
+<td style="text-align: left;">Aforo <strong>20,062</strong>, alcaldía Iztacalco, coordenadas 19.404 N, 99.0855 O.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">13</td>
+<td style="text-align: left;">Equipo (portal)</td>
+<td style="text-align: left;">Apertura manual de cada fuente elegida, descarga y vista previa</td>
+<td style="text-align: left;">9 de octubre de 2026 por el equipo (verificación de URLs, descargas de muestra y validación de esquemas en BigQuery; ver capturas en carpeta img).</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Por qué la verificación manual es obligatoria aquí.</strong> El portal datos.cdmx.gob.mx bloquea el acceso automatizado (<code>robots.txt</code>), así que la herramienta de IA solo pudo confirmar que los conjuntos existen por el índice del buscador, no abrir los archivos. El equipo los abrió, descargó y revisó directamente; las capturas de abajo son esa evidencia.</p>
+</div>
+</div>
+</section>
+<section id="fuentes-candidatas-evaluadas" class="level2">
+<h2 class="anchored" data-anchor-id="fuentes-candidatas-evaluadas">Fuentes candidatas evaluadas</h2>
+<p>Se evaluaron <strong>10 candidatas</strong> con cinco criterios: (1) ¿responde alguna pregunta de E0?, (2) ¿el grano es día o más fino?, (3) ¿cubre 2022–2026 y la CDMX?, (4) ¿la licencia permite uso académico?, (5) ¿se puede abrir y verificar?</p>
+<table class="table-striped caption-top table">
+<caption>Candidatas y criterio de selección</caption>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">#</th>
+<th style="text-align: left;">Candidata</th>
+<th style="text-align: left;">Tipo</th>
+<th style="text-align: left;">Decisión</th>
+<th style="text-align: left;">Motivo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">C1</td>
+<td style="text-align: left;"><strong>MLB Stats API · Liga Mexicana</strong></td>
+<td style="text-align: left;">API</td>
+<td style="text-align: left;">✅ Elegida</td>
+<td style="text-align: left;">Única fuente con asistencia <strong>por juego</strong> para temporada regular y playoffs. Alimenta P1, P2a y P3.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C2</td>
+<td style="text-align: left;"><strong>Afluencia diaria del Metro CDMX (desglosada)</strong></td>
+<td style="text-align: left;">Archivo de portal abierto (CSV)</td>
+<td style="text-align: left;">✅ Elegida</td>
+<td style="text-align: left;">Grano estación–día; las estaciones Ciudad Deportiva, Velódromo y Puebla (Línea 9) rodean el estadio. Aproxima la movilidad de llegada (E0: “movilidad y abandono”).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C3</td>
+<td style="text-align: left;"><strong>NOAA GSOD</strong> (<code>bigquery-public-data.noaa_gsod</code>)</td>
+<td style="text-align: left;">Dataset público de BigQuery</td>
+<td style="text-align: left;">✅ Elegida</td>
+<td style="text-align: left;">Clima diario <strong>observado</strong> en el AICM (~3 km del estadio): precipitación y temperatura máxima, que la API de juegos no trae.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C4</td>
+<td style="text-align: left;"><strong>Carpetas de investigación FGJ CDMX</strong></td>
+<td style="text-align: left;">Archivo de portal abierto (CSV)</td>
+<td style="text-align: left;">✅ Elegida</td>
+<td style="text-align: left;">Delitos con fecha y coordenadas: aproxima la inseguridad del entorno, el riesgo principal que nombró el stakeholder en E0.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C5</td>
+<td style="text-align: left;">INEGI · ENSU (percepción de inseguridad)</td>
+<td style="text-align: left;">Encuesta / tabulados</td>
+<td style="text-align: left;">❌ Descartada</td>
+<td style="text-align: left;">Grano trimestral por ciudad: no distingue un juego de otro. Queda como contexto.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C6</td>
+<td style="text-align: left;">Open-Meteo Historical Weather API</td>
+<td style="text-align: left;">API</td>
+<td style="text-align: left;">❌ Descartada (respaldo)</td>
+<td style="text-align: left;">Es reanálisis modelado (ERA5), no observación; redundante con C3. Se usará solo si MMMX tiene huecos.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C7</td>
+<td style="text-align: left;">Wikipedia · temporadas de la LMB</td>
+<td style="text-align: left;">Página web</td>
+<td style="text-align: left;">❌ Descartada</td>
+<td style="text-align: left;">Asistencia solo de playoffs; sin temporada regular.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C8</td>
+<td style="text-align: left;">Sitio oficial LMB / notas de récord de asistencia</td>
+<td style="text-align: left;">Página web</td>
+<td style="text-align: left;">❌ Descartada como tabla</td>
+<td style="text-align: left;">Sin descarga estructurada. Se usa para <strong>validar</strong> totales de C1 (récord de 14,443 por juego citado en E0).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C9</td>
+<td style="text-align: left;">Precios de boletos (Ticketmaster, notas de prensa)</td>
+<td style="text-align: left;">Página web / privado</td>
+<td style="text-align: left;">❌ Descartada</td>
+<td style="text-align: left;">No hay histórico de precio por juego; Ticketmaster no publica datos. P1 queda <strong>parcial</strong> (sin precio).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">C10</td>
+<td style="text-align: left;">INEGI · ENIGH (gasto en espectáculos)</td>
+<td style="text-align: left;">Microdatos de encuesta</td>
+<td style="text-align: left;">❌ Descartada</td>
+<td style="text-align: left;">Gasto del hogar por trimestre, no consumo dentro del estadio. No responde P4.</td>
+</tr>
+</tbody>
+</table>
+<p>Las cuatro elegidas son de <strong>tres tipos distintos</strong>: API (C1), archivo de portal abierto (C2 y C4) y dataset público de BigQuery (C3).</p>
+</section>
+<section id="catálogo-de-fuentes" class="level2">
+<h2 class="anchored" data-anchor-id="catálogo-de-fuentes">Catálogo de fuentes</h2>
+<section id="f1-mlb-stats-api-liga-mexicana-de-béisbol" class="level3">
+<h3 class="anchored" data-anchor-id="f1-mlb-stats-api-liga-mexicana-de-béisbol">F1 · MLB Stats API — Liga Mexicana de Béisbol</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Campo</th>
+<th style="text-align: left;">Registro</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Nombre y dueño</strong></td>
+<td style="text-align: left;">MLB Stats API (endpoint <code>schedule</code>), MLB Advanced Media, L.P. La plataforma incluye a la Liga Mexicana de Béisbol como liga 125.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>URL y acceso</strong></td>
+<td style="text-align: left;"><a href="https://statsapi.mlb.com/api/v1/schedule?sportId=23&amp;teamId=532&amp;startDate=2025-05-06&amp;endDate=2025-05-11&amp;hydrate=gameInfo,weather" class="uri">https://statsapi.mlb.com/api/v1/schedule?sportId=23&amp;teamId=532&amp;startDate=2025-05-06&amp;endDate=2025-05-11&amp;hydrate=gameInfo,weather</a> · API REST pública sin llave. Descarga con <a href="scripts/descargar_lmb.py"><code>scripts/descargar_lmb.py</code></a>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Formato y tamaño</strong></td>
+<td style="text-align: left;">JSON → CSV plano; ~500–600 filas (todas las fechas 2022–2026 de los Diablos, local y visitante), &lt; 1 MB.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Grano</strong></td>
+<td style="text-align: left;">Una fila por juego programado (<code>gamePk</code>).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Cobertura</strong></td>
+<td style="text-align: left;">Temporadas 2022–2026 (verificadas con muestras de 2022, 2025 y 2026), temporada regular (<code>R</code>) y playoffs (<code>F</code>, <code>D</code>, <code>L</code>, <code>W</code>). Se actualiza en vivo durante la temporada.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Licencia y restricciones</strong></td>
+<td style="text-align: left;">Términos de MLBAM: uso individual, <strong>no comercial y no masivo</strong> (<a href="http://gdx.mlb.com/components/copyright.txt" class="uri">http://gdx.mlb.com/components/copyright.txt</a>). El script hace 5 peticiones. Sin datos personales.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Llaves de integración</strong></td>
+<td style="text-align: left;"><code>officialDate</code> (fecha local del juego), <code>teams.away.team.id</code> (rival), <code>venue.id = 5340</code>, <code>gamePk</code>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Pregunta(s) de E0</strong></td>
+<td style="text-align: left;">P1, P2a, P3</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/f1_lmb_origen.png" class="img-fluid figure-img"></p>
+<figcaption>Página de origen: respuesta JSON del endpoint con <code>attendance</code></figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/f1_lmb_datos.png" class="img-fluid figure-img"></p>
+<figcaption>Vista previa de los datos descargados</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="f2-afluencia-diaria-del-metro-cdmx-desglosada" class="level3">
+<h3 class="anchored" data-anchor-id="f2-afluencia-diaria-del-metro-cdmx-desglosada">F2 · Afluencia diaria del Metro CDMX (desglosada)</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Campo</th>
+<th style="text-align: left;">Registro</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Nombre y dueño</strong></td>
+<td style="text-align: left;"><em>Afluencia diaria del Metro CDMX</em>, Sistema de Transporte Colectivo Metro, publicado por la Agencia Digital de Innovación Pública (ADIP) en el Portal de Datos Abiertos de la CDMX.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>URL y acceso</strong></td>
+<td style="text-align: left;"><a href="https://datos.cdmx.gob.mx/dataset/afluencia-diaria-del-metro-cdmx" class="uri">https://datos.cdmx.gob.mx/dataset/afluencia-diaria-del-metro-cdmx</a> · recurso <em>Afluencia Diaria del Metro (Desglosada)</em>: <a href="https://datos.cdmx.gob.mx/dataset/afluencia-diaria-del-metro-cdmx/resource/cce544e1-dc6b-42b4-bc27-0d8e6eb3ed72" class="uri">https://datos.cdmx.gob.mx/dataset/afluencia-diaria-del-metro-cdmx/resource/cce544e1-dc6b-42b4-bc27-0d8e6eb3ed72</a>. Descarga directa del CSV y recorte con <a href="scripts/filtrar_muestras.py"><code>scripts/filtrar_muestras.py</code></a>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Formato y tamaño</strong></td>
+<td style="text-align: left;">CSV. Archivo completo: ~185 MB. Muestra cargada (3 estaciones del entorno AHH: Ciudad Deportiva, Puebla, Velódromo, 2022–2026): 5,844 filas (~0.62 MB).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Grano</strong></td>
+<td style="text-align: left;">Una fila por fecha × línea × estación × tipo de pago (desglosada).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Cobertura</strong></td>
+<td style="text-align: left;">Todas las estaciones del Metro; serie diaria 2022–2026. Último mes disponible: agosto de 2026.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Licencia y restricciones</strong></td>
+<td style="text-align: left;">Licencia Libre de Uso No Comercial del Portal de Datos Abiertos de la Ciudad de México (CC0 / Dominio Público Gobierno CDMX). Sin datos personales (conteos agregados de afluencia).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Llaves de integración</strong></td>
+<td style="text-align: left;"><code>fecha</code>; <code>estacion</code> (Ciudad Deportiva, Velódromo, Puebla — Línea 9).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Pregunta(s) de E0</strong></td>
+<td style="text-align: left;">P2a (perfil de llegada), P1 (como validación de la asistencia, no como predictor: el dato del mismo día no existe 48 h antes)</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/f2_metro_origen.png" class="img-fluid figure-img"></p>
+<figcaption>Página de origen en datos.cdmx.gob.mx</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/f2_metro_datos.png" class="img-fluid figure-img"></p>
+<figcaption>Vista previa del CSV de afluencia</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="f3-noaa-global-surface-summary-of-the-day-gsod" class="level3">
+<h3 class="anchored" data-anchor-id="f3-noaa-global-surface-summary-of-the-day-gsod">F3 · NOAA Global Surface Summary of the Day (GSOD)</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Campo</th>
+<th style="text-align: left;">Registro</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Nombre y dueño</strong></td>
+<td style="text-align: left;"><em>Global Surface Summary of the Day</em>, NOAA National Centers for Environmental Information, publicado como dataset público de Google Cloud.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>URL y acceso</strong></td>
+<td style="text-align: left;">BigQuery: <code>bigquery-public-data.noaa_gsod</code> (tablas <code>gsodAAAA</code> y <code>stations</code>) · consola: <a href="https://console.cloud.google.com/bigquery?p=bigquery-public-data&amp;d=noaa_gsod&amp;page=dataset" class="uri">https://console.cloud.google.com/bigquery?p=bigquery-public-data&amp;d=noaa_gsod&amp;page=dataset</a>. Se copia a staging con <a href="sql/staging.sql"><code>sql/staging.sql</code></a>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Formato y tamaño</strong></td>
+<td style="text-align: left;">Tabla de BigQuery; una tabla por año (millones de filas, todas las estaciones del mundo). Muestra: una estación × 5 años ≈ 1,700 filas.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Grano</strong></td>
+<td style="text-align: left;">Una fila por estación por día.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Cobertura</strong></td>
+<td style="text-align: left;">Estación MMMX (Aeropuerto Internacional de la Ciudad de México, ~3 km al oriente del estadio), 2022–2026; actualización diaria con rezago de días.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Licencia y restricciones</strong></td>
+<td style="text-align: left;">Datos de NOAA, uso libre; los datos de estaciones fuera de EE. UU. siguen la Resolución 40 de la OMM (no redistribución comercial). Sin datos personales.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Llaves de integración</strong></td>
+<td style="text-align: left;"><code>year</code>, <code>mo</code>, <code>da</code> → fecha; <code>stn</code> (USAF) vía <code>stations.call = 'MMMX'</code>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Pregunta(s) de E0</strong></td>
+<td style="text-align: left;">P1, P2a, P3</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/f3_gsod_origen.png" class="img-fluid figure-img"></p>
+<figcaption>Dataset público noaa_gsod en BigQuery</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/f3_gsod_datos.png" class="img-fluid figure-img"></p>
+<figcaption>Resultado de la consulta de la estación MMMX</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="f4-carpetas-de-investigación-de-la-fgj-de-la-ciudad-de-méxico" class="level3">
+<h3 class="anchored" data-anchor-id="f4-carpetas-de-investigación-de-la-fgj-de-la-ciudad-de-méxico">F4 · Carpetas de investigación de la FGJ de la Ciudad de México</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Campo</th>
+<th style="text-align: left;">Registro</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Nombre y dueño</strong></td>
+<td style="text-align: left;"><em>Carpetas de investigación FGJ de la Ciudad de México</em>, Fiscalía General de Justicia de la CDMX, publicado en el Portal de Datos Abiertos de la CDMX.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>URL y acceso</strong></td>
+<td style="text-align: left;"><a href="https://datos.cdmx.gob.mx/dataset/carpetas-de-investigacion-fgj-de-la-ciudad-de-mexico" class="uri">https://datos.cdmx.gob.mx/dataset/carpetas-de-investigacion-fgj-de-la-ciudad-de-mexico</a> · descarga del CSV y recorte a 2 km del estadio con <a href="scripts/filtrar_muestras.py"><code>scripts/filtrar_muestras.py</code></a>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Formato y tamaño</strong></td>
+<td style="text-align: left;">CSV. Archivos anuales consolidados: ~340 MB. Muestra cargada (radio ≤ 2 km del Estadio AHH, 2022–2026): 3,218 filas (~0.85 MB).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Grano</strong></td>
+<td style="text-align: left;">Una fila por carpeta de investigación (un hecho denunciado).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Cobertura</strong></td>
+<td style="text-align: left;">Ciudad de México (polígono alcaldías Iztacalco y Venustiano Carranza); serie diaria 2022–2026. Último mes disponible: agosto de 2026.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Licencia y restricciones</strong></td>
+<td style="text-align: left;">Licencia de Datos Abiertos de la Ciudad de México. <strong>Dato sensible:</strong> solo se usan conteos agregados por día dentro del radio perimetral; no se publica ningún registro individual ni datos de víctimas.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Llaves de integración</strong></td>
+<td style="text-align: left;"><code>fecha_hecho</code> (no <code>fecha_inicio</code>, que es la fecha de la denuncia); <code>latitud</code> / <code>longitud</code> contra las coordenadas del estadio.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Pregunta(s) de E0</strong></td>
+<td style="text-align: left;">P1, P3 (riesgo de seguridad señalado por el stakeholder)</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/f4_fgj_origen.png" class="img-fluid figure-img"></p>
+<figcaption>Página de origen en datos.cdmx.gob.mx</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/f4_fgj_datos.png" class="img-fluid figure-img"></p>
+<figcaption>Vista previa del CSV de carpetas</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="análisis-de-integración" class="level2">
+<h2 class="anchored" data-anchor-id="análisis-de-integración">Análisis de integración</h2>
+<p>Las cuatro fuentes se unen en un solo almacén por la <strong>fecha</strong> del juego y, para las de contexto, por la <strong>ubicación</strong> del estadio. El juego es el evento central; las fuentes de contexto (diarias o más finas) se agregan al día y se pegan al juego.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  F1["F1 · MLB Stats API&lt;br/&gt;1 fila = juego"] --&gt;|officialDate, team id, venue 5340| J(("Juego local&lt;br/&gt;en el AHH"))
+  F3["F3 · NOAA GSOD&lt;br/&gt;1 fila = estación-día"] --&gt;|year-mo-da, estación MMMX| D(("Día"))
+  F2["F2 · Metro&lt;br/&gt;1 fila = estación-día-tipo de pago"] --&gt;|fecha, 3 estaciones L9| D
+  F4["F4 · FGJ&lt;br/&gt;1 fila = carpeta"] --&gt;|fecha_hecho, ≤ 2 km| D
+  D --&gt;|fecha_key| J
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="table-striped caption-top table">
+<caption>Llaves y granularidad</caption>
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Fuente</th>
+<th style="text-align: left;">Llave de unión</th>
+<th style="text-align: left;">Grano original</th>
+<th style="text-align: left;">Cómo llega al grano del hecho</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">F1</td>
+<td style="text-align: left;"><code>officialDate</code>, <code>away.team.id</code>, <code>venue.id</code></td>
+<td style="text-align: left;">juego</td>
+<td style="text-align: left;">Directo (filtrar <code>venue.id = 5340</code> y <code>status = Final</code>).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">F3</td>
+<td style="text-align: left;"><code>year</code>+<code>mo</code>+<code>da</code></td>
+<td style="text-align: left;">estación–día</td>
+<td style="text-align: left;">Una estación; se une 1:1 por fecha.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">F2</td>
+<td style="text-align: left;"><code>fecha</code> + <code>estacion</code></td>
+<td style="text-align: left;">estación–día–tipo de pago</td>
+<td style="text-align: left;">Suma de los tipos de pago y de las 3 estaciones → día.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">F4</td>
+<td style="text-align: left;"><code>fecha_hecho</code> + coordenadas</td>
+<td style="text-align: left;">carpeta (evento)</td>
+<td style="text-align: left;">Conteo de carpetas a ≤ 2 km → día.</td>
+</tr>
+</tbody>
+</table>
+<section id="problemas-anticipados-se-documentan-aquí-se-resuelven-en-la-fase-de-preparación" class="level3">
+<h3 class="anchored" data-anchor-id="problemas-anticipados-se-documentan-aquí-se-resuelven-en-la-fase-de-preparación">Problemas anticipados (se documentan aquí; se resuelven en la fase de preparación)</h3>
+<p><strong>Fechas y zonas horarias</strong></p>
+<ul>
+<li>La API entrega <code>gameDate</code> y <code>firstPitch</code> en <strong>UTC</strong>. Un juego de las 19:00 en la CDMX aparece como 01:00 del día siguiente en UTC. La llave correcta es <code>officialDate</code>, que ya es la fecha local.</li>
+<li>México tuvo horario de verano hasta octubre de 2022: durante la temporada 2022 la CDMX estaba en UTC−5 y desde 2023 en UTC−6. La hora local de inicio debe calcularse con la zona <code>America/Mexico_City</code>, no con un desfase fijo.</li>
+<li>No está confirmado si el “día” de GSOD es UTC o local. Si es UTC, la lluvia de la noche local (18:00–24:00) cae en la fila del día siguiente; hay que verificarlo antes de usar <code>prcp</code> para juegos nocturnos.</li>
+</ul>
+<p><strong>Registros del calendario (F1)</strong></p>
+<ul>
+<li><strong>Dobles carteleras:</strong> en la muestra del 6 de junio de 2026 la asistencia se reportó una sola vez (15,047) y el otro juego del mismo día trae <code>0</code>.</li>
+<li><strong>Juegos pospuestos, suspendidos y reanudados</strong> aparecen con el mismo <code>gamePk</code> en más de una fila (p.&nbsp;ej. 846445 aparece tres veces). Hay que deduplicar y quedarse con el registro <code>Final</code>.</li>
+<li><strong>Asistencia mayor al aforo:</strong> en la Serie del Rey 2025 se reportan 21,000 asistentes contra un aforo de 20,062. <code>pct_ocupacion</code> puede superar 1; se marcará, no se corregirá.</li>
+<li>La API también trae juegos de <strong>visitante</strong> y un juego de playoffs se jugó en Puebla; el filtro es <code>venue.id = 5340</code>, no “el equipo local es 532”.</li>
+<li>Los nombres vienen <strong>sin acentos</strong> (“Diablos Rojos del Mexico”, “Leones de Yucatan”). Se une por <code>team.id</code>, nunca por nombre.</li>
+</ul>
+<p><strong>Catálogos y unidades</strong></p>
+<ul>
+<li>GSOD reporta temperatura en °F, precipitación en pulgadas y faltantes como <code>9999.9</code> / <code>99.99</code>; la API reporta la temperatura en °F como texto. Todo se convertirá a °C y mm.</li>
+<li>En el Metro el nombre de estación puede variar en acentos y mayúsculas (“Velódromo” / “Velodromo”); el script de recorte normaliza solo para <strong>filtrar</strong>, sin cambiar el valor.</li>
+</ul>
+<p><strong>Representatividad de las fuentes de contexto</strong></p>
+<ul>
+<li>El Metro registra <strong>entradas</strong>, no salidas: mide la llegada, no el abandono. Además, junto al estadio están el Estadio GNP Seguros (antes Foro Sol), el Palacio de los Deportes y el Autódromo; un concierto el mismo día infla la afluencia sin relación con el béisbol.</li>
+<li>En la FGJ, <code>fecha_inicio</code> (denuncia) puede ser días después de <code>fecha_hecho</code>; hay carpetas sin coordenadas (el script las cuenta) y los datos más recientes se revisan con rezago.</li>
+</ul>
+<p><strong>Cobertura</strong></p>
+<ul>
+<li>F1 cubre 2022–2026 completo. F2 y F4 se publican con rezago, así que 2026 puede quedar incompleto en las medidas de contexto. 2021 se excluye a propósito: hubo aforo restringido por COVID-19.</li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Proyecto de Minería de Datos · Diablos Rojos del México</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Estadio Alfredo Harp Helú · UNAM</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

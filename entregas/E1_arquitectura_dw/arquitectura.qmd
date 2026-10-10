@@ -1,0 +1,405 @@
+---
+title: "E1 · Arquitectura de tres capas"
+subtitle: "Staging → DW → DataMart en BigQuery"
+---
+
+## Vista general
+
+El almacén se implementa a escala reducida en BigQuery, en el proyecto de Google Cloud del equipo (créditos de BigQuery for Education), con **un dataset por capa**, los tres en la ubicación **US**. La ubicación no es arbitraria: la fuente F3 (`bigquery-public-data.noaa_gsod`) vive en la multirregión US y BigQuery no permite consultar entre regiones distintas.
+
+```{mermaid}
+flowchart LR
+  subgraph Fuentes
+    F1["F1 · MLB Stats API"]
+    F2["F2 · Metro CDMX (CSV)"]
+    F3["F3 · NOAA GSOD (BigQuery público)"]
+    F4["F4 · FGJ CDMX (CSV)"]
+  end
+  subgraph S["aymd_staging · datos crudos"]
+    S1[stg_lmb_juegos]
+    S2[stg_metro_afluencia]
+    S3[stg_noaa_gsod_mmmx]
+    S4[stg_fgj_carpetas]
+  end
+  subgraph W["aymd_dw · esquema estrella"]
+    H[(hechos_juego)]
+    DF[dim_fecha]
+    DR[dim_rival]
+    DH[dim_horario]
+    DC[dim_clima]
+    DT[dim_tipo_juego]
+  end
+  subgraph M["aymd_mart · vistas OLAP"]
+    V1[vw_p1a / vw_p1b]
+    V2[vw_p2a]
+    V3[vw_p3a / vw_p3b]
+  end
+  F1 -->|script + carga CSV| S1
+  F2 -->|descarga + recorte + carga CSV| S2
+  F3 -->|CREATE TABLE AS SELECT| S3
+  F4 -->|descarga + recorte + carga CSV| S4
+  S -.->|"preparación (entrega posterior)"| W
+  W --> M
+```
+
+| Capa | Dataset | Contenido | Estado en E1 |
+|:--|:--|:--|:--|
+| **Staging** | `aymd_staging` | Datos crudos tal como vienen de cada fuente: sin limpiar, sin convertir unidades, con duplicados y valores centinela. Una tabla por fuente, con la fuente y la fecha de carga en su descripción. | 4 tablas cargadas (muestra 2022–2026). |
+| **DW** | `aymd_dw` | Esquema estrella: `hechos_juego` y 5 dimensiones, creadas con DDL. | Tablas creadas **vacías**; poblarlas es la fase de preparación. |
+| **DataMart** | `aymd_mart` | Una vista por pregunta de E0, construidas sobre el esquema estrella con ROLLUP, CUBE y funciones de ventana. | 5 vistas válidas (P1, P2a, P3); P4 justificada. |
+
+: Rol de cada capa {.striped}
+
+**Fuera de alcance en E1** (como pide la entrega): el ETL completo, poblar el DW y el dashboard. Looker Studio se podrá conectar a `aymd_mart` más adelante.
+
+## Capa staging
+
+Tablas y origen:
+
+| Tabla | Fuente | Cómo se cargó | Contenido |
+|:--|:--|:--|:--|
+| `stg_lmb_juegos` | F1 | `scripts/descargar_lmb.py` → CSV → consola (Subir, detección automática de esquema) | Todos los juegos de los Diablos 2022–2026 (local, visitante, pospuestos, dobles carteleras). |
+| `stg_metro_afluencia` | F2 | CSV del portal → `scripts/filtrar_muestras.py metro` → consola | Estaciones Ciudad Deportiva, Velódromo y Puebla, 2022–2026, todas las columnas originales. |
+| `stg_noaa_gsod_mmmx` | F3 | `CREATE TABLE AS SELECT` desde el dataset público | Estación MMMX 2022–2026, unidades originales (°F, pulgadas). |
+| `stg_fgj_carpetas` | F4 | CSV del portal → `scripts/filtrar_muestras.py fgj` → consola | Carpetas a ≤ 2 km del estadio, 2022–2026, todas las columnas originales. |
+
+: Tablas de staging {.striped}
+
+Código de la capa (creación de los tres datasets, copia de GSOD y descripción de cada tabla). Archivo: [`sql/staging.sql`](sql/staging.sql).
+
+```{.sql filename="sql/staging.sql"}
+-- =====================================================================
+-- E1 · Arquitectura del DW · Capa STAGING
+-- Proyecto: Asistencia en el Estadio Alfredo Harp Helú (Diablos Rojos)
+-- Ejecutar en la consola de BigQuery, dentro del proyecto del equipo.
+--
+-- Los TRES datasets se crean en la misma ubicación (US): la fuente pública
+-- NOAA GSOD vive en la multirregión US y BigQuery no permite consultas
+-- entre datasets de regiones distintas.
+-- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- 0) Crear los tres datasets (uno por capa) en la misma ubicación
+-- ---------------------------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS aymd_staging
+  OPTIONS (location = 'US',
+           description = 'Capa staging (E1): datos crudos tal como vienen de cada fuente, sin limpiar ni transformar.');
+
+CREATE SCHEMA IF NOT EXISTS aymd_dw
+  OPTIONS (location = 'US',
+           description = 'Capa DW (E1): esquema estrella (hechos_juego + 5 dimensiones).');
+
+CREATE SCHEMA IF NOT EXISTS aymd_mart
+  OPTIONS (location = 'US',
+           description = 'Capa DataMart (E1): vistas que responden las preguntas de E0 con logica OLAP.');
+
+-- ---------------------------------------------------------------------
+-- 1) NOAA GSOD (dataset publico de BigQuery)
+--    Paso 1a: localizar la estacion del Aeropuerto Internacional de la
+--    Ciudad de Mexico (codigo OACI MMMX), a ~3 km del estadio.
+-- ---------------------------------------------------------------------
+SELECT usaf, wban, name, country, call, lat, lon, elev, `begin`, `end`
+FROM `bigquery-public-data.noaa_gsod.stations`
+WHERE call = 'MMMX';
+
+-- Paso 1b: copiar a staging los registros diarios CRUDOS de esa estacion
+-- (2022-2026). No se transforma nada: temperaturas siguen en grados F,
+-- precipitacion en pulgadas y los faltantes con sus centinelas (9999.9 / 99.99).
+-- Escanea ~2-3 GB de la tabla publica (cabe holgado en los creditos).
+CREATE OR REPLACE TABLE aymd_staging.stg_noaa_gsod_mmmx
+OPTIONS (description = 'Fuente: bigquery-public-data.noaa_gsod (NOAA GSOD), estacion MMMX. Copia cruda 2022-2026. Responde: P1, P2a, P3.')
+AS
+SELECT
+  g.*,
+  _TABLE_SUFFIX AS tabla_origen
+FROM `bigquery-public-data.noaa_gsod.gsod*` AS g
+WHERE _TABLE_SUFFIX BETWEEN '2022' AND '2026'
+  AND g.stn IN (
+    SELECT usaf
+    FROM `bigquery-public-data.noaa_gsod.stations`
+    WHERE call = 'MMMX'
+  );
+
+-- ---------------------------------------------------------------------
+-- 2) Tablas cargadas desde archivo (consola: Crear tabla > Subir > CSV,
+--    esquema con deteccion automatica). Nombres esperados:
+--      aymd_staging.stg_lmb_juegos          <- lmb_juegos_2022_2026.csv
+--      aymd_staging.stg_metro_afluencia     <- metro_afluencia_entorno_ahh.csv
+--      aymd_staging.stg_fgj_carpetas        <- fgj_carpetas_entorno_ahh.csv
+--    Despues de cargarlas, documentar fuente y fecha de carga:
+-- ---------------------------------------------------------------------
+ALTER TABLE aymd_staging.stg_lmb_juegos
+  SET OPTIONS (description = 'Fuente: MLB Stats API (statsapi.mlb.com), Liga Mexicana (leagueId 125), equipo 532. Calendario + gameInfo + weather 2022-2026, crudo. Cargada: AAAA-MM-DD.');
+
+ALTER TABLE aymd_staging.stg_metro_afluencia
+  SET OPTIONS (description = 'Fuente: Afluencia diaria del Metro CDMX (desglosada), datos.cdmx.gob.mx. Muestra: estaciones Ciudad Deportiva, Velodromo y Puebla (L9), 2022-2026, crudo. Cargada: AAAA-MM-DD.');
+
+ALTER TABLE aymd_staging.stg_fgj_carpetas
+  SET OPTIONS (description = 'Fuente: Carpetas de investigacion FGJ CDMX, datos.cdmx.gob.mx. Muestra: hechos a <= 2 km del estadio, 2022-2026, crudo. Cargada: AAAA-MM-DD.');
+
+-- ---------------------------------------------------------------------
+-- 3) Verificacion rapida de cada tabla de staging (COUNT y rangos; no
+--    usar SELECT * para no escanear de mas).
+-- ---------------------------------------------------------------------
+SELECT 'stg_lmb_juegos' AS tabla, COUNT(*) AS filas,
+       MIN(CAST(official_date AS STRING)) AS desde,
+       MAX(CAST(official_date AS STRING)) AS hasta
+FROM aymd_staging.stg_lmb_juegos
+UNION ALL
+SELECT 'stg_noaa_gsod_mmmx', COUNT(*),
+       MIN(CONCAT(year, '-', mo, '-', da)),
+       MAX(CONCAT(year, '-', mo, '-', da))
+FROM aymd_staging.stg_noaa_gsod_mmmx
+UNION ALL
+SELECT 'stg_metro_afluencia', COUNT(*),
+       MIN(CAST(fecha AS STRING)), MAX(CAST(fecha AS STRING))
+FROM aymd_staging.stg_metro_afluencia
+UNION ALL
+SELECT 'stg_fgj_carpetas', COUNT(*),
+       MIN(CAST(fecha_hecho AS STRING)), MAX(CAST(fecha_hecho AS STRING))
+FROM aymd_staging.stg_fgj_carpetas;
+```
+
+### Evidencia en BigQuery
+
+![Los tres datasets en la misma ubicación (US)](img/bq_datasets_ubicacion.png)
+
+![Historial de trabajos de carga](img/bq_carga_trabajos.png)
+
+::: {layout-ncol=2}
+![`stg_lmb_juegos` · esquema](img/bq_stg_lmb_esquema.png)
+
+![`stg_lmb_juegos` · vista previa](img/bq_stg_lmb_preview.png)
+
+![`stg_metro_afluencia` · esquema](img/bq_stg_metro_esquema.png)
+
+![`stg_metro_afluencia` · vista previa](img/bq_stg_metro_preview.png)
+
+![`stg_noaa_gsod_mmmx` · esquema](img/bq_stg_gsod_esquema.png)
+
+![`stg_noaa_gsod_mmmx` · vista previa](img/bq_stg_gsod_preview.png)
+
+![`stg_fgj_carpetas` · esquema](img/bq_stg_fgj_esquema.png)
+
+![`stg_fgj_carpetas` · vista previa](img/bq_stg_fgj_preview.png)
+:::
+
+## Capa DW
+
+El diseño completo (grano, diagrama, dimensiones, SCD y DDL) está en [Esquema estrella](estrella.qmd).
+
+## Capa DataMart
+
+Una vista por pregunta de E0. Como el DW está vacío en E1, las vistas no devuelven filas todavía; lo que se comprueba es que son **sintácticamente válidas en BigQuery** y que referencian columnas que existen. Archivo completo: [`sql/consultas_mart.sql`](sql/consultas_mart.sql).
+
+| Vista | Pregunta | Operación OLAP |
+|:--|:--|:--|
+| `vw_p1a_asistencia_contexto` | P1 | `GROUP BY ROLLUP` + `GROUPING()` |
+| `vw_p1b_correlaciones` | P1 | `CORR` con `GROUP BY ROLLUP` |
+| `vw_p2a_perfil_juegos` | P2a (ajustada) | Funciones de ventana (`AVG`/`STDDEV_SAMP OVER`, `PERCENT_RANK`) |
+| `vw_p3a_dataset_riesgo_valle` | P3 | Ventanas `RANGE` que terminan 2 días antes del juego |
+| `vw_p3b_tasa_riesgo_cubo` | P3 | `GROUP BY CUBE` + `GROUPING()` |
+
+: Vistas del DataMart {.striped}
+
+### P1 · ¿Qué variables predicen mejor la asistencia con 48 h de anticipación?
+
+**P1a.** Asistencia promedio por día de la semana, franja horaria y zona del rival, con subtotales por cada nivel de la jerarquía. Las columnas `GROUPING()` indican qué filas son subtotales.
+
+```sql
+CREATE OR REPLACE VIEW aymd_mart.vw_p1a_asistencia_contexto
+OPTIONS (description = 'Responde P1: asistencia promedio por dia, franja y zona del rival con subtotales ROLLUP.')
+AS
+SELECT
+  f.nombre_dia,
+  h.franja,
+  r.zona                          AS zona_rival,
+  COUNT(*)                        AS juegos,
+  ROUND(AVG(j.asistencia), 0)     AS asistencia_promedio,
+  ROUND(AVG(j.pct_ocupacion), 3)  AS ocupacion_promedio,
+  GROUPING(f.nombre_dia)          AS es_subtotal_dia,
+  GROUPING(h.franja)              AS es_subtotal_franja,
+  GROUPING(r.zona)                AS es_subtotal_zona
+FROM aymd_dw.hechos_juego        AS j
+JOIN aymd_dw.dim_fecha           AS f ON j.fecha_key      = f.fecha_key
+JOIN aymd_dw.dim_horario         AS h ON j.horario_key    = h.horario_key
+JOIN aymd_dw.dim_rival           AS r ON j.rival_key      = r.rival_key
+JOIN aymd_dw.dim_tipo_juego      AS t ON j.tipo_juego_key = t.tipo_juego_key
+WHERE t.fase = 'Temporada regular'
+GROUP BY ROLLUP (f.nombre_dia, h.franja, r.zona);
+```
+
+![Validación de `vw_p1a` en el editor de BigQuery](img/mart_p1a.png)
+
+**P1b.** Correlación de la asistencia con las variables numéricas candidatas (clima, rendimiento previo, delitos del entorno), por temporada y en total.
+
+```sql
+CREATE OR REPLACE VIEW aymd_mart.vw_p1b_correlaciones
+OPTIONS (description = 'Responde P1: correlacion de Pearson entre asistencia y clima, rendimiento y delitos del entorno, por temporada y total.')
+AS
+SELECT
+  f.temporada_lmb,
+  COUNT(*)                                             AS juegos,
+  ROUND(CORR(j.asistencia, j.temp_max_dia_c), 3)       AS corr_temp_max,
+  ROUND(CORR(j.asistencia, j.precipitacion_dia_mm), 3) AS corr_lluvia,
+  ROUND(CORR(j.asistencia, j.pct_victorias_previo), 3) AS corr_rendimiento_previo,
+  ROUND(CORR(j.asistencia, j.delitos_entorno_dia), 3)  AS corr_delitos_entorno,
+  GROUPING(f.temporada_lmb)                            AS es_total
+FROM aymd_dw.hechos_juego   AS j
+JOIN aymd_dw.dim_fecha      AS f ON j.fecha_key      = f.fecha_key
+JOIN aymd_dw.dim_tipo_juego AS t ON j.tipo_juego_key = t.tipo_juego_key
+WHERE t.fase = 'Temporada regular'
+GROUP BY ROLLUP (f.temporada_lmb);
+```
+
+![Validación de `vw_p1b` en el editor de BigQuery](img/mart_p1b.png)
+
+### P2a · ¿Qué perfiles de juego existen según su asistencia, contexto y movilidad de llegada?
+
+Pregunta ajustada (ver [pivote](pivote.qmd)). La vista arma el vector de características de cada juego y lo estandariza **dentro de su temporada** con funciones de ventana, para que k-means no confunda el crecimiento de la afición entre años con un perfil distinto.
+
+```sql
+CREATE OR REPLACE VIEW aymd_mart.vw_p2a_perfil_juegos
+OPTIONS (description = 'Responde P2a: caracteristicas estandarizadas por juego para segmentar perfiles de jornada.')
+AS
+SELECT
+  j.juego_id,
+  f.fecha,
+  f.temporada_lmb,
+  f.nombre_dia,
+  f.es_dia_valle,
+  h.franja,
+  r.nombre_corto                                              AS rival,
+  t.fase,
+  c.categoria_lluvia,
+  j.asistencia,
+  j.pct_ocupacion,
+  j.afluencia_metro_entorno,
+  SAFE_DIVIDE(j.afluencia_metro_entorno, j.asistencia)        AS razon_metro_asistencia,
+  h.hora_inicio_local + j.duracion_min / 60                   AS hora_salida_estimada,
+  SAFE_DIVIDE(j.asistencia - AVG(j.asistencia) OVER w_temporada,
+              STDDEV_SAMP(j.asistencia) OVER w_temporada)     AS z_asistencia,
+  SAFE_DIVIDE(j.afluencia_metro_entorno - AVG(j.afluencia_metro_entorno) OVER w_temporada,
+              STDDEV_SAMP(j.afluencia_metro_entorno) OVER w_temporada) AS z_metro,
+  PERCENT_RANK() OVER (PARTITION BY f.temporada_lmb ORDER BY j.asistencia) AS percentil_asistencia
+FROM aymd_dw.hechos_juego   AS j
+JOIN aymd_dw.dim_fecha      AS f ON j.fecha_key      = f.fecha_key
+JOIN aymd_dw.dim_horario    AS h ON j.horario_key    = h.horario_key
+JOIN aymd_dw.dim_rival      AS r ON j.rival_key      = r.rival_key
+JOIN aymd_dw.dim_tipo_juego AS t ON j.tipo_juego_key = t.tipo_juego_key
+JOIN aymd_dw.dim_clima      AS c ON j.clima_key      = c.clima_key
+WINDOW w_temporada AS (PARTITION BY f.temporada_lmb);
+```
+
+![Validación de `vw_p2a` en el editor de BigQuery](img/mart_p2a.png)
+
+### P3 · ¿Qué juegos entre semana tienen mayor riesgo de no alcanzar 9,500 asistentes?
+
+**P3a.** Conjunto para entrenar el clasificador. La etiqueta es `en_riesgo = asistencia < 9,500` (límite inferior de la meta de E0). Las variables históricas usan ventanas `RANGE` que **terminan dos días antes** del juego, para que el modelo solo vea información disponible 48 h antes, que es cuando el área comercial puede actuar.
+
+```sql
+CREATE OR REPLACE VIEW aymd_mart.vw_p3a_dataset_riesgo_valle
+OPTIONS (description = 'Responde P3: juegos de dia valle con etiqueta en_riesgo (< 9,500) y variables disponibles 48 h antes.')
+AS
+WITH base AS (
+  SELECT
+    j.juego_id,
+    f.fecha,
+    f.temporada_lmb,
+    f.nombre_dia,
+    f.es_dia_valle,
+    f.es_quincena,
+    f.es_festivo,
+    r.team_id_api                  AS rival_id,
+    r.nombre_corto                 AS rival,
+    r.es_rival_misma_zona,
+    h.franja,
+    c.categoria_lluvia,
+    c.rango_temperatura,
+    j.pct_victorias_previo,
+    j.delitos_entorno_dia,
+    j.asistencia
+  FROM aymd_dw.hechos_juego   AS j
+  JOIN aymd_dw.dim_fecha      AS f ON j.fecha_key      = f.fecha_key
+  JOIN aymd_dw.dim_rival      AS r ON j.rival_key      = r.rival_key
+  JOIN aymd_dw.dim_horario    AS h ON j.horario_key    = h.horario_key
+  JOIN aymd_dw.dim_clima      AS c ON j.clima_key      = c.clima_key
+  JOIN aymd_dw.dim_tipo_juego AS t ON j.tipo_juego_key = t.tipo_juego_key
+  WHERE t.fase = 'Temporada regular'
+),
+con_historia AS (
+  SELECT
+    b.*,
+    -- asistencia promedio de los juegos locales de los 30 dias previos,
+    -- excluyendo las ultimas 48 h (dato disponible al decidir)
+    AVG(b.asistencia) OVER (
+      PARTITION BY b.temporada_lmb
+      ORDER BY UNIX_DATE(b.fecha)
+      RANGE BETWEEN 30 PRECEDING AND 2 PRECEDING
+    ) AS asistencia_prom_30d_previos,
+    -- asistencia promedio contra el mismo rival en visitas anteriores
+    -- (hasta ~13 meses atras, sin contar la serie en curso)
+    AVG(b.asistencia) OVER (
+      PARTITION BY b.rival_id
+      ORDER BY UNIX_DATE(b.fecha)
+      RANGE BETWEEN 400 PRECEDING AND 3 PRECEDING
+    ) AS asistencia_prom_rival_previa
+  FROM base AS b
+)
+SELECT
+  juego_id,
+  fecha,
+  temporada_lmb,
+  nombre_dia,
+  es_quincena,
+  es_festivo,
+  rival,
+  es_rival_misma_zona,
+  franja,
+  categoria_lluvia,
+  rango_temperatura,
+  pct_victorias_previo,
+  delitos_entorno_dia,
+  asistencia_prom_30d_previos,
+  asistencia_prom_rival_previa,
+  asistencia,
+  IF(asistencia < 9500, 1, 0) AS en_riesgo
+FROM con_historia
+WHERE es_dia_valle;
+```
+
+![Validación de `vw_p3a` en el editor de BigQuery](img/mart_p3a.png)
+
+**P3b.** Tasa de juegos en riesgo en día valle para todas las combinaciones de temporada, franja horaria y zona del rival.
+
+```sql
+CREATE OR REPLACE VIEW aymd_mart.vw_p3b_tasa_riesgo_cubo
+OPTIONS (description = 'Responde P3: tasa de juegos en riesgo (< 9,500) en dia valle con CUBE sobre temporada, franja y zona del rival.')
+AS
+SELECT
+  f.temporada_lmb,
+  h.franja,
+  r.zona                                                      AS zona_rival,
+  COUNT(*)                                                    AS juegos_valle,
+  COUNTIF(j.asistencia < 9500)                                AS juegos_en_riesgo,
+  ROUND(SAFE_DIVIDE(COUNTIF(j.asistencia < 9500), COUNT(*)), 3) AS tasa_riesgo,
+  GROUPING(f.temporada_lmb)                                   AS g_temporada,
+  GROUPING(h.franja)                                          AS g_franja,
+  GROUPING(r.zona)                                            AS g_zona
+FROM aymd_dw.hechos_juego   AS j
+JOIN aymd_dw.dim_fecha      AS f ON j.fecha_key      = f.fecha_key
+JOIN aymd_dw.dim_horario    AS h ON j.horario_key    = h.horario_key
+JOIN aymd_dw.dim_rival      AS r ON j.rival_key      = r.rival_key
+JOIN aymd_dw.dim_tipo_juego AS t ON j.tipo_juego_key = t.tipo_juego_key
+WHERE f.es_dia_valle
+  AND t.fase = 'Temporada regular'
+GROUP BY CUBE (f.temporada_lmb, h.franja, r.zona);
+```
+
+![Validación de `vw_p3b` en el editor de BigQuery](img/mart_p3b.png)
+
+### P4 · ¿Qué factores se relacionan con un mayor gasto por persona?
+
+**No se puede responder con este diseño.** Ninguna fuente pública registra ventas dentro del estadio (punto de venta) ni boletaje por aficionado: esos datos (Ticketmaster, Pase Diablo, terminales de venta) son privados del club. La candidata más cercana, la ENIGH del INEGI, mide el gasto trimestral de los hogares, no el consumo en un juego, y se descartó (ver [fuentes](fuentes.qmd)).
+
+El esquema queda preparado para extenderse: cuando el club comparta esos datos, se agregaría una segunda tabla de hechos `hechos_venta` (grano: una línea de ticket de venta) que comparta `dim_fecha` y el `juego_id` como dimensiones conformadas. Ver [trazabilidad](trazabilidad.qmd) y [pivote](pivote.qmd).

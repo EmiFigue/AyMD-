@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>E1 · Esquema estrella – Proyecto Minería de Datos</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/baseball.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-fb70c40dc7482c689762369618a42d12.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner h1,
+      .quarto-title-block .quarto-title-banner h2,
+      .quarto-title-block .quarto-title-banner h3,
+      .quarto-title-block .quarto-title-banner h4,
+      .quarto-title-block .quarto-title-banner h5,
+      .quarto-title-block .quarto-title-banner h6
+      {
+        color: #ffffff;
+      }
+
+      .quarto-title-block .quarto-title-banner {
+        color: #ffffff;
+background: #0c2340;
+      }
+</style>
+<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/baseball.svg" alt="Pelota de béisbol" class="navbar-logo light-content">
+    <img src="../../images/baseball.svg" alt="Pelota de béisbol" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Proyecto Minería de Datos</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-e0-negocio" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">E0: Negocio</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-e0-negocio">    
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/bitacora.html">
+ <span class="dropdown-text">Bitácora</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/canvas.html">
+ <span class="dropdown-text">Canvas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/preguntas.html">
+ <span class="dropdown-text">Preguntas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/criterio_exito.html">
+ <span class="dropdown-text">Criterio Éxito</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/riesgos_supuestos.html">
+ <span class="dropdown-text">Riesgos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/fuentes.html">
+ <span class="dropdown-text">Fuentes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/uso_ia.html">
+ <span class="dropdown-text">Uso IA</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-e1-arquitectura-dw" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">E1: Arquitectura DW</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-e1-arquitectura-dw">    
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/fuentes.html">
+ <span class="dropdown-text">Fuentes de Datos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/arquitectura.html">
+ <span class="dropdown-text">Arquitectura 3 Capas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/estrella.html">
+ <span class="dropdown-text">Esquema Estrella</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/trazabilidad.html">
+ <span class="dropdown-text">Trazabilidad</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/pivote.html">
+ <span class="dropdown-text">Pivote por Datos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/uso_ia.html">
+ <span class="dropdown-text">Uso IA</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">E1 · Esquema estrella</h1>
+            <p class="subtitle lead">Hecho, grano, dimensiones, diagrama y DDL</p>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#granos-candidatos" id="toc-granos-candidatos" class="nav-link active" data-scroll-target="#granos-candidatos">Granos candidatos</a></li>
+  <li><a href="#diagrama" id="toc-diagrama" class="nav-link" data-scroll-target="#diagrama">Diagrama</a></li>
+  <li><a href="#tabla-de-hechos-hechos_juego" id="toc-tabla-de-hechos-hechos_juego" class="nav-link" data-scroll-target="#tabla-de-hechos-hechos_juego">Tabla de hechos: <code>hechos_juego</code></a></li>
+  <li><a href="#dimensiones" id="toc-dimensiones" class="nav-link" data-scroll-target="#dimensiones">Dimensiones</a></li>
+  <li><a href="#ddl-ejecutado-en-bigquery" id="toc-ddl-ejecutado-en-bigquery" class="nav-link" data-scroll-target="#ddl-ejecutado-en-bigquery">DDL ejecutado en BigQuery</a></li>
+  <li><a href="#evidencia-esquema-de-cada-tabla-en-bigquery" id="toc-evidencia-esquema-de-cada-tabla-en-bigquery" class="nav-link" data-scroll-target="#evidencia-esquema-de-cada-tabla-en-bigquery">Evidencia: esquema de cada tabla en BigQuery</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="granos-candidatos" class="level2">
+<h2 class="anchored" data-anchor-id="granos-candidatos">Granos candidatos</h2>
+<p>El grano se definió a partir de lo que las fuentes del <a href="../../entregas/E1_arquitectura_dw/fuentes.html">catálogo</a> permiten realmente, no de cómo E0 imaginó el problema (E0 suponía datos por aficionado y por ticket de consumo, que no son públicos).</p>
+<table class="table-striped caption-top table">
+<caption>Granos candidatos</caption>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">#</th>
+<th style="text-align: left;">Grano candidato</th>
+<th style="text-align: left;">Lo sustenta</th>
+<th style="text-align: left;">Ventaja</th>
+<th style="text-align: left;">Por qué no (o sí)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">G1</td>
+<td style="text-align: left;"><strong>Una fila por juego local</strong></td>
+<td style="text-align: left;">F1 (asistencia por <code>gamePk</code>)</td>
+<td style="text-align: left;">Conserva horario, rival, fase y resultado de cada juego.</td>
+<td style="text-align: left;">✅ <strong>Elegido.</strong> Es el evento sobre el que el área comercial decide (promociones 48 h antes).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">G2</td>
+<td style="text-align: left;">Una fila por día con juego local (jornada)</td>
+<td style="text-align: left;">F1 agregado + F2, F3, F4 diarios</td>
+<td style="text-align: left;">Resuelve las dobles carteleras (una sola asistencia por día).</td>
+<td style="text-align: left;">Mezcla dos juegos con horarios distintos y pierde el horario, variable clave de P1. Las dobles carteleras son pocas.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">G3</td>
+<td style="text-align: left;">Una fila por serie (≈ 3 juegos contra un rival)</td>
+<td style="text-align: left;">F1 agregado</td>
+<td style="text-align: left;">Suaviza el ruido de un juego aislado.</td>
+<td style="text-align: left;">≈ 15 series locales por temporada: muy pocas filas para clasificar (P3) y se pierde el día de la semana.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">G4</td>
+<td style="text-align: left;">Una fila por estación de Metro por día</td>
+<td style="text-align: left;">F2</td>
+<td style="text-align: left;">Grano más fino de movilidad.</td>
+<td style="text-align: left;">No contiene la asistencia, que es la variable objetivo; sirve como contexto, no como hecho.</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Grano declarado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Una fila por juego disputado por los Diablos Rojos del México como local en el Estadio Alfredo Harp Helú (temporadas 2022–2026, temporada regular y playoffs).</strong></p>
+</div>
+</div>
+<p><strong>Qué permite responder:</strong> P1 (qué variables explican la asistencia de cada juego), P2a (perfiles de juego, pregunta ajustada en el <a href="../../entregas/E1_arquitectura_dw/pivote.html">pivote</a>) y P3 (qué juegos de día valle quedan por debajo de 9,500).</p>
+<p><strong>Qué ya no puede responder (con honestidad):</strong> nada que dependa de la persona o del ticket de compra. P2 original (perfiles del “aficionado fantasma” por consumo) y P4 (gasto por persona) necesitan datos de punto de venta y de boletaje que el club no publica. Tampoco se puede medir el efecto del <strong>precio</strong> del boleto en P1: no existe un histórico público por juego. Estas limitaciones están en la <a href="../../entregas/E1_arquitectura_dw/trazabilidad.html">matriz de trazabilidad</a>.</p>
+<p><strong>Regla para las dobles carteleras:</strong> se conservan las dos filas (dos juegos = dos hechos). La API reporta la asistencia en uno solo y <code>0</code> en el otro; en la fase de preparación se decidirá si se reparte o se trata como jornada.</p>
+</section>
+<section id="diagrama" class="level2">
+<h2 class="anchored" data-anchor-id="diagrama">Diagrama</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">erDiagram
+  DIM_FECHA ||--o{ HECHOS_JUEGO : "fecha_key"
+  DIM_RIVAL ||--o{ HECHOS_JUEGO : "rival_key"
+  DIM_HORARIO ||--o{ HECHOS_JUEGO : "horario_key"
+  DIM_CLIMA ||--o{ HECHOS_JUEGO : "clima_key"
+  DIM_TIPO_JUEGO ||--o{ HECHOS_JUEGO : "tipo_juego_key"
+
+  HECHOS_JUEGO {
+    INT64 juego_id PK "gamePk, degenerada"
+    INT64 fecha_key FK
+    INT64 rival_key FK
+    INT64 horario_key FK
+    INT64 clima_key FK
+    INT64 tipo_juego_key FK
+    INT64 asistencia "aditiva"
+    FLOAT64 pct_ocupacion "no aditiva"
+    INT64 carreras_diablos "aditiva"
+    INT64 carreras_rival "aditiva"
+    INT64 gano_diablos "aditiva"
+    FLOAT64 pct_victorias_previo "no aditiva"
+    INT64 duracion_min "no aditiva"
+    FLOAT64 temp_juego_c "no aditiva"
+    FLOAT64 temp_max_dia_c "no aditiva"
+    FLOAT64 precipitacion_dia_mm "semiaditiva"
+    INT64 afluencia_metro_entorno "semiaditiva"
+    INT64 delitos_entorno_dia "semiaditiva"
+  }
+  DIM_FECHA {
+    INT64 fecha_key PK "AAAAMMDD"
+    DATE fecha
+    INT64 anio
+    INT64 mes
+    STRING nombre_dia
+    BOOL es_fin_semana
+    BOOL es_dia_valle
+    BOOL es_quincena
+    BOOL es_festivo
+    INT64 temporada_lmb
+  }
+  DIM_RIVAL {
+    INT64 rival_key PK
+    INT64 team_id_api "llave natural"
+    STRING nombre_equipo
+    STRING zona
+    BOOL es_rival_misma_zona
+    DATE valido_desde
+    DATE valido_hasta
+    BOOL es_version_actual
+  }
+  DIM_HORARIO {
+    INT64 horario_key PK
+    INT64 hora_inicio_local
+    STRING franja
+    STRING dia_noche_api
+  }
+  DIM_CLIMA {
+    INT64 clima_key PK
+    STRING condicion_api
+    STRING condicion_es
+    STRING categoria_lluvia
+    STRING rango_temperatura
+  }
+  DIM_TIPO_JUEGO {
+    INT64 tipo_juego_key PK
+    STRING game_type_api
+    STRING fase
+    STRING ronda
+    BOOL es_doble_cartelera
+    INT64 numero_juego_en_serie
+    INT64 juegos_en_serie
+  }
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="tabla-de-hechos-hechos_juego" class="level2">
+<h2 class="anchored" data-anchor-id="tabla-de-hechos-hechos_juego">Tabla de hechos: <code>hechos_juego</code></h2>
+<table class="table-striped caption-top table">
+<caption>Medidas</caption>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Medida</th>
+<th style="text-align: left;">Tipo</th>
+<th style="text-align: left;">Aditividad</th>
+<th style="text-align: left;">Fuente</th>
+<th style="text-align: left;">Pregunta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>asistencia</code></td>
+<td style="text-align: left;">INT64</td>
+<td style="text-align: left;">Aditiva</td>
+<td style="text-align: left;">F1</td>
+<td style="text-align: left;">P1, P2a, P3 (variable objetivo)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pct_ocupacion</code></td>
+<td style="text-align: left;">FLOAT64</td>
+<td style="text-align: left;">No aditiva (cociente sobre aforo de 20,062)</td>
+<td style="text-align: left;">F1 + aforo</td>
+<td style="text-align: left;">P2a, P3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>carreras_diablos</code>, <code>carreras_rival</code></td>
+<td style="text-align: left;">INT64</td>
+<td style="text-align: left;">Aditivas</td>
+<td style="text-align: left;">F1</td>
+<td style="text-align: left;">P1 (rendimiento del equipo)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>gano_diablos</code></td>
+<td style="text-align: left;">INT64 (0/1)</td>
+<td style="text-align: left;">Aditiva (su suma = victorias)</td>
+<td style="text-align: left;">F1</td>
+<td style="text-align: left;">P1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>pct_victorias_previo</code></td>
+<td style="text-align: left;">FLOAT64</td>
+<td style="text-align: left;">No aditiva</td>
+<td style="text-align: left;">F1 (récord antes del juego)</td>
+<td style="text-align: left;">P1, P3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>duracion_min</code></td>
+<td style="text-align: left;">INT64</td>
+<td style="text-align: left;">No aditiva</td>
+<td style="text-align: left;">F1</td>
+<td style="text-align: left;">P2a (hora estimada de salida)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>temp_juego_c</code></td>
+<td style="text-align: left;">FLOAT64</td>
+<td style="text-align: left;">No aditiva</td>
+<td style="text-align: left;">F1 (clima al inicio, °F → °C)</td>
+<td style="text-align: left;">P1, P3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temp_max_dia_c</code></td>
+<td style="text-align: left;">FLOAT64</td>
+<td style="text-align: left;">No aditiva</td>
+<td style="text-align: left;">F3</td>
+<td style="text-align: left;">P1, P3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>precipitacion_dia_mm</code></td>
+<td style="text-align: left;">FLOAT64</td>
+<td style="text-align: left;">Semiaditiva: se suma en el tiempo, no entre dos juegos del mismo día</td>
+<td style="text-align: left;">F3</td>
+<td style="text-align: left;">P1, P3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>afluencia_metro_entorno</code></td>
+<td style="text-align: left;">INT64</td>
+<td style="text-align: left;">Semiaditiva (igual que la anterior)</td>
+<td style="text-align: left;">F2</td>
+<td style="text-align: left;">P2a; validación de P1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>delitos_entorno_dia</code></td>
+<td style="text-align: left;">INT64</td>
+<td style="text-align: left;">Semiaditiva (igual que la anterior)</td>
+<td style="text-align: left;">F4</td>
+<td style="text-align: left;">P1, P3</td>
+</tr>
+</tbody>
+</table>
+<p><code>juego_id</code> (el <code>gamePk</code> de la API) es una <strong>dimensión degenerada</strong>: identifica el juego y permite rastrear cada fila hasta la fuente, sin necesitar tabla propia.</p>
+</section>
+<section id="dimensiones" class="level2">
+<h2 class="anchored" data-anchor-id="dimensiones">Dimensiones</h2>
+<table class="table-striped caption-top table">
+<caption>Dimensiones (5, incluida <code>dim_fecha</code>)</caption>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Dimensión</th>
+<th style="text-align: left;">Llave sustituta</th>
+<th style="text-align: left;">Atributos principales</th>
+<th style="text-align: left;">SCD</th>
+<th style="text-align: left;">Por qué ese tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>dim_fecha</code></td>
+<td style="text-align: left;"><code>fecha_key</code> (AAAAMMDD)</td>
+<td style="text-align: left;">fecha, año, mes, día de la semana, <code>es_dia_valle</code>, <code>es_fin_semana</code>, <code>es_quincena</code>, <code>es_festivo</code>, temporada</td>
+<td style="text-align: left;"><strong>Tipo 0</strong></td>
+<td style="text-align: left;">Un día y sus propiedades de calendario no cambian.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>dim_rival</code></td>
+<td style="text-align: left;"><code>rival_key</code> (secuencial)</td>
+<td style="text-align: left;"><code>team_id_api</code> (natural), nombre, abreviatura, ciudad, zona Norte/Sur, estadio, <code>es_rival_misma_zona</code>, vigencia</td>
+<td style="text-align: left;"><strong>Tipo 2</strong></td>
+<td style="text-align: left;">Los equipos de la LMB se mudan, cambian de nombre o de zona (p.&nbsp;ej. Tecos jugó en 2022 en dos sedes; Charros y Conspiradores se integraron recientemente). Cada juego debe quedar ligado a la versión del rival vigente en esa fecha.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>dim_horario</code></td>
+<td style="text-align: left;"><code>horario_key</code></td>
+<td style="text-align: left;">hora de inicio local, franja (mediodía / tarde / noche), <code>day</code>/<code>night</code> de la API</td>
+<td style="text-align: left;"><strong>Tipo 0</strong></td>
+<td style="text-align: left;">Catálogo fijo de horas; no hay nada que actualizar.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>dim_clima</code></td>
+<td style="text-align: left;"><code>clima_key</code></td>
+<td style="text-align: left;">condición de la API (y su traducción), categoría de lluvia y rango de temperatura del día</td>
+<td style="text-align: left;"><strong>Tipo 0</strong></td>
+<td style="text-align: left;">Son bandas fijas; un juego se asocia a la banda observada ese día y no se reescribe.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>dim_tipo_juego</code></td>
+<td style="text-align: left;"><code>tipo_juego_key</code></td>
+<td style="text-align: left;">código de la API (<code>R</code>, <code>F</code>, <code>D</code>, <code>L</code>, <code>W</code>), fase, ronda, doble cartelera, juego de la serie</td>
+<td style="text-align: left;"><strong>Tipo 0</strong></td>
+<td style="text-align: left;">Catálogo de formatos; un cambio de formato de la liga crea filas nuevas, no modifica las viejas.</td>
+</tr>
+</tbody>
+</table>
+<p>Las cinco dimensiones y todas las medidas están ligadas a una pregunta en la <a href="../../entregas/E1_arquitectura_dw/trazabilidad.html">matriz de trazabilidad</a>; ninguna queda huérfana.</p>
+</section>
+<section id="ddl-ejecutado-en-bigquery" class="level2">
+<h2 class="anchored" data-anchor-id="ddl-ejecutado-en-bigquery">DDL ejecutado en BigQuery</h2>
+<p>Las tablas se crean vacías (poblarlas es trabajo de la fase de preparación). Las llaves primarias y foráneas se declaran <code>NOT ENFORCED</code>: BigQuery no las valida, pero documentan el diseño y ayudan al optimizador. Archivo: <a href="sql/ddl_dw.sql"><code>sql/ddl_dw.sql</code></a>.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>sql/ddl_dw.sql</strong></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-filename="sql/ddl_dw.sql"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- =====================================================================</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- E1 · Arquitectura del DW · Capa DW (esquema estrella)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">-- Grano de hechos_juego: una fila por juego disputado por los Diablos</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- Rojos del Mexico como local en el Estadio Alfredo Harp Helu.</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- Las tablas se crean vacias: poblarlas corresponde a la fase de</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">-- preparacion de los datos (entrega posterior).</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- Ejecutar en este orden (primero dimensiones, luego hechos).</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">-- =====================================================================</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">-- ---------------------------------------------------------------------</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">-- dim_fecha · SCD tipo 0 (el calendario no cambia)</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">-- ---------------------------------------------------------------------</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span> aymd_dw.dim_fecha (</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  fecha_key        INT64  <span class="kw">NOT</span> <span class="kw">NULL</span>,  <span class="co">-- llave sustituta inteligente AAAAMMDD</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  fecha            <span class="dt">DATE</span>   <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  anio             INT64,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  mes              INT64,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  nombre_mes       STRING,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  dia              INT64,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  dia_semana_num   INT64,            <span class="co">-- 1 = lunes ... 7 = domingo (ISO)</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  nombre_dia       STRING,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  semana_iso       INT64,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  es_fin_semana    BOOL,             <span class="co">-- viernes a domingo</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  es_dia_valle     BOOL,             <span class="co">-- martes, miercoles o jueves (definicion de E0)</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  es_quincena      BOOL,             <span class="co">-- dia de pago (15 o ultimo del mes) y 2 dias siguientes</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  es_festivo       BOOL,             <span class="co">-- descanso obligatorio LFT art. 74 o asueto de Semana Santa</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  nombre_festivo   STRING,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  temporada_lmb    INT64,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (fecha_key) <span class="kw">NOT</span> ENFORCED</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>OPTIONS (description <span class="op">=</span> <span class="st">'Dimension de tiempo, grano dia. SCD tipo 0. Responde: P1, P2a, P3.'</span>);</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co">-- ---------------------------------------------------------------------</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co">-- dim_rival · SCD tipo 2 (los equipos de la LMB se mudan, cambian de</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co">-- nombre o de zona; se conserva la version vigente en cada juego)</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co">-- ---------------------------------------------------------------------</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span> aymd_dw.dim_rival (</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  rival_key            INT64  <span class="kw">NOT</span> <span class="kw">NULL</span>,  <span class="co">-- llave sustituta secuencial</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  team_id_api          INT64  <span class="kw">NOT</span> <span class="kw">NULL</span>,  <span class="co">-- llave natural (MLB Stats API)</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  nombre_equipo        STRING,</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  nombre_corto         STRING,</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  abreviatura          STRING,</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>  ciudad               STRING,</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  zona                 STRING,           <span class="co">-- Norte / Sur</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>  estadio_local        STRING,</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>  es_rival_misma_zona  BOOL,             <span class="co">-- TRUE si juega en la Zona Sur, como los Diablos</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>  valido_desde         <span class="dt">DATE</span>   <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>  valido_hasta         <span class="dt">DATE</span>,             <span class="co">-- NULL = version vigente</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>  es_version_actual    BOOL   <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>  <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (rival_key) <span class="kw">NOT</span> ENFORCED</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>OPTIONS (description <span class="op">=</span> <span class="st">'Equipo visitante. SCD tipo 2. Responde: P1, P2a, P3.'</span>);</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="co">-- ---------------------------------------------------------------------</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="co">-- dim_horario · SCD tipo 0 (catalogo fijo de horas de inicio)</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="co">-- ---------------------------------------------------------------------</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span> aymd_dw.dim_horario (</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>  horario_key        INT64  <span class="kw">NOT</span> <span class="kw">NULL</span>,  <span class="co">-- llave sustituta</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>  hora_inicio_local  INT64,            <span class="co">-- 0-23, hora de Ciudad de Mexico</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>  franja             STRING,           <span class="co">-- 'Mediodia (&lt;16 h)', 'Tarde (16-18 h)', 'Noche (&gt;=19 h)'</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>  dia_noche_api      STRING,           <span class="co">-- 'day' / 'night' tal como lo reporta la API</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>  <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (horario_key) <span class="kw">NOT</span> ENFORCED</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>OPTIONS (description <span class="op">=</span> <span class="st">'Hora de inicio del juego. SCD tipo 0. Responde: P1, P2a, P3.'</span>);</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="co">-- ---------------------------------------------------------------------</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="co">-- dim_clima · SCD tipo 0 (catalogo de bandas; un juego se asocia a la</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="co">-- banda observada ese dia, no se actualiza)</span></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="co">-- ---------------------------------------------------------------------</span></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span> aymd_dw.dim_clima (</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>  clima_key           INT64  <span class="kw">NOT</span> <span class="kw">NULL</span>,  <span class="co">-- llave sustituta</span></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>  condicion_api       STRING,           <span class="co">-- 'Cloudy', 'Partly Cloudy', 'Rain'... (MLB Stats API)</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>  condicion_es        STRING,           <span class="co">-- traduccion al espanol</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>  categoria_lluvia    STRING,           <span class="co">-- 'Sin lluvia', 'Ligera (&lt;5 mm)', 'Moderada (5-20 mm)', 'Fuerte (&gt;20 mm)' (NOAA GSOD)</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>  rango_temperatura   STRING,           <span class="co">-- 'Fresco (&lt;18 C)', 'Templado (18-24 C)', 'Calido (&gt;24 C)' (NOAA GSOD, maxima)</span></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>  <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (clima_key) <span class="kw">NOT</span> ENFORCED</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>OPTIONS (description <span class="op">=</span> <span class="st">'Condicion meteorologica del dia del juego en bandas. SCD tipo 0. Responde: P1, P2a, P3.'</span>);</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="co">-- ---------------------------------------------------------------------</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="co">-- dim_tipo_juego · SCD tipo 0 (catalogo de fases y formato del juego)</span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="co">-- ---------------------------------------------------------------------</span></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span> aymd_dw.dim_tipo_juego (</span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>  tipo_juego_key         INT64  <span class="kw">NOT</span> <span class="kw">NULL</span>,  <span class="co">-- llave sustituta</span></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>  game_type_api          STRING,           <span class="co">-- R, F, D, L, W (MLB Stats API)</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>  fase                   STRING,           <span class="co">-- 'Temporada regular' / 'Postemporada'</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>  ronda                  STRING,           <span class="co">-- seriesDescription: 'Primera Ronda de Playoffs', 'Serie del Rey'...</span></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>  es_doble_cartelera     BOOL,</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>  numero_juego_en_serie  INT64,</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>  juegos_en_serie        INT64,</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>  <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (tipo_juego_key) <span class="kw">NOT</span> ENFORCED</span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>OPTIONS (description <span class="op">=</span> <span class="st">'Fase y formato del juego. SCD tipo 0. Responde: P1, P2a, P3.'</span>);</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a><span class="co">-- ---------------------------------------------------------------------</span></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a><span class="co">-- hechos_juego · grano: un juego local en el Estadio Alfredo Harp Helu</span></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a><span class="co">-- ---------------------------------------------------------------------</span></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">TABLE</span> aymd_dw.hechos_juego (</span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>  juego_id                 INT64  <span class="kw">NOT</span> <span class="kw">NULL</span>,  <span class="co">-- gamePk de la API (dimension degenerada)</span></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>  fecha_key                INT64  <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>  rival_key                INT64  <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>  horario_key              INT64  <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>  clima_key                INT64  <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>  tipo_juego_key           INT64  <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>  asistencia               INT64,    <span class="co">-- aditiva</span></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>  pct_ocupacion            FLOAT64,  <span class="co">-- no aditiva: asistencia / 20062 (aforo)</span></span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>  carreras_diablos         INT64,    <span class="co">-- aditiva</span></span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>  carreras_rival           INT64,    <span class="co">-- aditiva</span></span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>  gano_diablos             INT64,    <span class="co">-- aditiva (0/1; su suma = victorias)</span></span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a>  pct_victorias_previo     FLOAT64,  <span class="co">-- no aditiva: % de victorias antes del juego</span></span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>  duracion_min             INT64,    <span class="co">-- no aditiva</span></span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>  temp_juego_c             FLOAT64,  <span class="co">-- no aditiva: temperatura al inicio (API, convertida de F)</span></span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>  temp_max_dia_c           FLOAT64,  <span class="co">-- no aditiva: maxima del dia (NOAA GSOD)</span></span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>  precipitacion_dia_mm     FLOAT64,  <span class="co">-- semiaditiva: suma en el tiempo, no entre juegos del mismo dia</span></span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>  afluencia_metro_entorno  INT64,    <span class="co">-- semiaditiva: entradas del dia en Cd. Deportiva + Velodromo + Puebla</span></span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>  delitos_entorno_dia      INT64,    <span class="co">-- semiaditiva: carpetas FGJ a &lt;= 2 km del estadio ese dia</span></span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>  <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (juego_id) <span class="kw">NOT</span> ENFORCED,</span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FOREIGN</span> <span class="kw">KEY</span> (fecha_key)      <span class="kw">REFERENCES</span> aymd_dw.dim_fecha (fecha_key)           <span class="kw">NOT</span> ENFORCED,</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FOREIGN</span> <span class="kw">KEY</span> (rival_key)      <span class="kw">REFERENCES</span> aymd_dw.dim_rival (rival_key)           <span class="kw">NOT</span> ENFORCED,</span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FOREIGN</span> <span class="kw">KEY</span> (horario_key)    <span class="kw">REFERENCES</span> aymd_dw.dim_horario (horario_key)       <span class="kw">NOT</span> ENFORCED,</span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FOREIGN</span> <span class="kw">KEY</span> (clima_key)      <span class="kw">REFERENCES</span> aymd_dw.dim_clima (clima_key)           <span class="kw">NOT</span> ENFORCED,</span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FOREIGN</span> <span class="kw">KEY</span> (tipo_juego_key) <span class="kw">REFERENCES</span> aymd_dw.dim_tipo_juego (tipo_juego_key) <span class="kw">NOT</span> ENFORCED</span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>OPTIONS (description <span class="op">=</span> <span class="st">'Grano: una fila por juego disputado por los Diablos Rojos como local en el Estadio Alfredo Harp Helu (2022-2026). Responde: P1, P2a, P3.'</span>);</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="evidencia-esquema-de-cada-tabla-en-bigquery" class="level2">
+<h2 class="anchored" data-anchor-id="evidencia-esquema-de-cada-tabla-en-bigquery">Evidencia: esquema de cada tabla en BigQuery</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/dw_ddl_ejecutado.png" class="img-fluid figure-img"></p>
+<figcaption>Ejecución del DDL en el editor de BigQuery</figcaption>
+</figure>
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/dw_hechos_juego.png" class="img-fluid figure-img"></p>
+<figcaption><code>hechos_juego</code></figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/dw_dim_fecha.png" class="img-fluid figure-img"></p>
+<figcaption><code>dim_fecha</code></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/dw_dim_rival.png" class="img-fluid figure-img"></p>
+<figcaption><code>dim_rival</code></figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/dw_dim_horario.png" class="img-fluid figure-img"></p>
+<figcaption><code>dim_horario</code></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/dw_dim_clima.png" class="img-fluid figure-img"></p>
+<figcaption><code>dim_clima</code></figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/dw_dim_tipo_juego.png" class="img-fluid figure-img"></p>
+<figcaption><code>dim_tipo_juego</code></figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Proyecto de Minería de Datos · Diablos Rojos del México</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Estadio Alfredo Harp Helú · UNAM</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

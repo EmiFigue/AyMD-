@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>E1 · Trazabilidad a E0 – Proyecto Minería de Datos</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/baseball.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-fb70c40dc7482c689762369618a42d12.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner h1,
+      .quarto-title-block .quarto-title-banner h2,
+      .quarto-title-block .quarto-title-banner h3,
+      .quarto-title-block .quarto-title-banner h4,
+      .quarto-title-block .quarto-title-banner h5,
+      .quarto-title-block .quarto-title-banner h6
+      {
+        color: #ffffff;
+      }
+
+      .quarto-title-block .quarto-title-banner {
+        color: #ffffff;
+background: #0c2340;
+      }
+</style>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/baseball.svg" alt="Pelota de béisbol" class="navbar-logo light-content">
+    <img src="../../images/baseball.svg" alt="Pelota de béisbol" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Proyecto Minería de Datos</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-e0-negocio" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">E0: Negocio</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-e0-negocio">    
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/bitacora.html">
+ <span class="dropdown-text">Bitácora</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/canvas.html">
+ <span class="dropdown-text">Canvas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/preguntas.html">
+ <span class="dropdown-text">Preguntas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/criterio_exito.html">
+ <span class="dropdown-text">Criterio Éxito</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/riesgos_supuestos.html">
+ <span class="dropdown-text">Riesgos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/fuentes.html">
+ <span class="dropdown-text">Fuentes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E0_comprension_negocio/uso_ia.html">
+ <span class="dropdown-text">Uso IA</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-e1-arquitectura-dw" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">E1: Arquitectura DW</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-e1-arquitectura-dw">    
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/fuentes.html">
+ <span class="dropdown-text">Fuentes de Datos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/arquitectura.html">
+ <span class="dropdown-text">Arquitectura 3 Capas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/estrella.html">
+ <span class="dropdown-text">Esquema Estrella</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/trazabilidad.html">
+ <span class="dropdown-text">Trazabilidad</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/pivote.html">
+ <span class="dropdown-text">Pivote por Datos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../entregas/E1_arquitectura_dw/uso_ia.html">
+ <span class="dropdown-text">Uso IA</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">E1 · Trazabilidad a E0</h1>
+            <p class="subtitle lead">Pregunta → tarea de minería → métrica → dimensión → fuente → estado</p>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#matriz-de-trazabilidad" id="toc-matriz-de-trazabilidad" class="nav-link active" data-scroll-target="#matriz-de-trazabilidad">Matriz de trazabilidad</a></li>
+  <li><a href="#verificación-inversa-ninguna-dimensión-ni-medida-huérfana" id="toc-verificación-inversa-ninguna-dimensión-ni-medida-huérfana" class="nav-link" data-scroll-target="#verificación-inversa-ninguna-dimensión-ni-medida-huérfana">Verificación inversa: ninguna dimensión ni medida huérfana</a></li>
+  <li><a href="#estado-de-las-preguntas-de-e0" id="toc-estado-de-las-preguntas-de-e0" class="nav-link" data-scroll-target="#estado-de-las-preguntas-de-e0">Estado de las preguntas de E0</a></li>
+  <li><a href="#relación-con-el-criterio-de-éxito-de-e0" id="toc-relación-con-el-criterio-de-éxito-de-e0" class="nav-link" data-scroll-target="#relación-con-el-criterio-de-éxito-de-e0">Relación con el criterio de éxito de E0</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="matriz-de-trazabilidad" class="level2">
+<h2 class="anchored" data-anchor-id="matriz-de-trazabilidad">Matriz de trazabilidad</h2>
+<table class="table-striped caption-top table">
+<caption>Matriz de trazabilidad</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Pregunta</th>
+<th style="text-align: left;">Tarea de minería</th>
+<th style="text-align: left;">Métrica (hecho)</th>
+<th style="text-align: left;">Dimensiones</th>
+<th style="text-align: left;">Fuente(s)</th>
+<th style="text-align: left;">Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>P1 (E0):</strong> ¿Qué variables predicen mejor la asistencia de un juego con al menos 48 h de anticipación?</td>
+<td style="text-align: left;">Regresión</td>
+<td style="text-align: left;"><code>asistencia</code> (objetivo); <code>pct_victorias_previo</code>, <code>temp_juego_c</code>, <code>temp_max_dia_c</code>, <code>precipitacion_dia_mm</code>, <code>delitos_entorno_dia</code>, <code>carreras_*</code>, <code>gano_diablos</code></td>
+<td style="text-align: left;"><code>dim_fecha</code>, <code>dim_rival</code>, <code>dim_horario</code>, <code>dim_clima</code>, <code>dim_tipo_juego</code></td>
+<td style="text-align: left;">F1, F3, F4</td>
+<td style="text-align: left;"><strong>Parcial.</strong> Se cubren día, horario, rival, fase, clima, rendimiento y seguridad del entorno. Falta el <strong>precio del boleto</strong>: no existe histórico público por juego (C9 descartada). En producción, el clima tendría que venir de un pronóstico, no del dato observado.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P2 (E0):</strong> ¿Se pueden identificar perfiles dentro del “aficionado fantasma” a partir de sus patrones de consumo?</td>
+<td style="text-align: left;">Segmentación</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;"><strong>No cubierta.</strong> Requiere consumo por persona (punto de venta) y boletaje (Ticketmaster / Pase Diablo), datos privados del club. Se reformula como P2a.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>P2a (ajustada):</strong> ¿Qué perfiles de juego existen según su asistencia, su contexto y la movilidad de llegada? Motivo: sin datos por persona, se segmentan los <strong>juegos</strong>, que es el nivel en el que el club ya ejecuta las acciones de E0 (cierre de zonas, Happy Hour, promociones).</td>
+<td style="text-align: left;">Segmentación</td>
+<td style="text-align: left;"><code>asistencia</code>, <code>pct_ocupacion</code>, <code>afluencia_metro_entorno</code>, <code>duracion_min</code></td>
+<td style="text-align: left;"><code>dim_fecha</code>, <code>dim_rival</code>, <code>dim_horario</code>, <code>dim_clima</code>, <code>dim_tipo_juego</code></td>
+<td style="text-align: left;">F1, F2, F3</td>
+<td style="text-align: left;"><strong>Cubierta</strong> (pregunta ajustada, ver <a href="../../entregas/E1_arquitectura_dw/pivote.html">pivote</a>).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P3 (E0):</strong> ¿Qué juegos entre semana tienen mayor riesgo de no alcanzar la meta de 9,500 a 10,000 asistentes?</td>
+<td style="text-align: left;">Clasificación</td>
+<td style="text-align: left;"><code>asistencia</code> (etiqueta <code>en_riesgo</code> = &lt; 9,500); <code>pct_victorias_previo</code>, <code>delitos_entorno_dia</code>, clima</td>
+<td style="text-align: left;"><code>dim_fecha</code> (<code>es_dia_valle</code>, <code>es_quincena</code>, <code>es_festivo</code>), <code>dim_rival</code>, <code>dim_horario</code>, <code>dim_clima</code>, <code>dim_tipo_juego</code></td>
+<td style="text-align: left;">F1, F3, F4</td>
+<td style="text-align: left;"><strong>Cubierta.</strong> Las variables históricas se calculan con ventanas que terminan 48 h antes del juego.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>P4 (E0):</strong> ¿Qué factores están relacionados con un mayor gasto por persona en comida, bebida y mercancía?</td>
+<td style="text-align: left;">Regresión / correlación</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;"><strong>No cubierta.</strong> No hay datos públicos de consumo dentro del estadio; la ENIGH (C10) mide gasto de hogares, no del estadio. El diseño admite una futura <code>hechos_venta</code> con dimensiones conformadas.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="verificación-inversa-ninguna-dimensión-ni-medida-huérfana" class="level2">
+<h2 class="anchored" data-anchor-id="verificación-inversa-ninguna-dimensión-ni-medida-huérfana">Verificación inversa: ninguna dimensión ni medida huérfana</h2>
+<p>Cada dimensión responde al menos una pregunta (original o ajustada):</p>
+<table class="table-striped caption-top table">
+<caption>Dimensiones contra preguntas</caption>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Dimensión</th>
+<th style="text-align: center;">P1</th>
+<th style="text-align: center;">P2a</th>
+<th style="text-align: center;">P3</th>
+<th style="text-align: left;">Uso concreto</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>dim_fecha</code></td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: left;">Día de la semana, día valle (filtro de P3), quincena, festivos, temporada.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>dim_rival</code></td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: left;">Atractivo del rival y misma zona (rivalidad regional).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>dim_horario</code></td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: left;">“Horario no óptimo” (riesgo de E0); hora de salida estimada en P2a.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>dim_clima</code></td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: left;">Lluvia y temperatura como variables de contexto.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>dim_tipo_juego</code></td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: center;">✔</td>
+<td style="text-align: left;">Separar temporada regular de playoffs (las vistas de P1 y P3 filtran por fase) y marcar dobles carteleras.</td>
+</tr>
+</tbody>
+</table>
+<p>Y cada medida tiene al menos una pregunta: <code>asistencia</code> (P1, P2a, P3), <code>pct_ocupacion</code> (P2a, P3), <code>carreras_diablos</code>, <code>carreras_rival</code> y <code>gano_diablos</code> (P1, como insumo del rendimiento), <code>pct_victorias_previo</code> (P1, P3), <code>duracion_min</code> (P2a), <code>temp_juego_c</code> y <code>temp_max_dia_c</code> (P1, P3), <code>precipitacion_dia_mm</code> (P1, P3), <code>afluencia_metro_entorno</code> (P2a; validación de P1) y <code>delitos_entorno_dia</code> (P1, P3).</p>
+</section>
+<section id="estado-de-las-preguntas-de-e0" class="level2">
+<h2 class="anchored" data-anchor-id="estado-de-las-preguntas-de-e0">Estado de las preguntas de E0</h2>
+<table class="table-striped caption-top table">
+<caption>Resumen</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Pregunta</th>
+<th style="text-align: left;">Estado</th>
+<th style="text-align: left;">Vista del DataMart</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Cubierta parcialmente (sin precio)</td>
+<td style="text-align: left;"><code>vw_p1a_asistencia_contexto</code>, <code>vw_p1b_correlaciones</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">No cubierta → reformulada como P2a</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P2a</td>
+<td style="text-align: left;">Cubierta</td>
+<td style="text-align: left;"><code>vw_p2a_perfil_juegos</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P3</td>
+<td style="text-align: left;">Cubierta</td>
+<td style="text-align: left;"><code>vw_p3a_dataset_riesgo_valle</code>, <code>vw_p3b_tasa_riesgo_cubo</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P4</td>
+<td style="text-align: left;">No cubierta (sin datos de consumo)</td>
+<td style="text-align: left;">— (justificación en <a href="../../entregas/E1_arquitectura_dw/arquitectura.html">arquitectura</a>)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="relación-con-el-criterio-de-éxito-de-e0" class="level2">
+<h2 class="anchored" data-anchor-id="relación-con-el-criterio-de-éxito-de-e0">Relación con el criterio de éxito de E0</h2>
+<ul>
+<li><strong>KPI 1 (asistencia en días valle de 9,500 a 10,000):</strong> medible directamente con <code>hechos_juego</code> filtrando <code>es_dia_valle</code>. P3 está diseñada alrededor de ese umbral.</li>
+<li><strong>KPI 2 (+15 % de gasto per cápita):</strong> no medible con datos públicos; depende de que el club comparta ventas. Ver <a href="../../entregas/E1_arquitectura_dw/pivote.html">pivote</a>.</li>
+<li><strong>KPI 3 (identificar al 55–60 % de los asistentes en el CRM):</strong> no depende del DW de E1; es una meta de captura de datos del club.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Proyecto de Minería de Datos · Diablos Rojos del México</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Estadio Alfredo Harp Helú · UNAM</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

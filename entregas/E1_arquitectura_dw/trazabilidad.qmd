@@ -1,0 +1,50 @@
+---
+title: "E1 · Trazabilidad a E0"
+subtitle: "Pregunta → tarea de minería → métrica → dimensión → fuente → estado"
+---
+
+## Matriz de trazabilidad
+
+| Pregunta | Tarea de minería | Métrica (hecho) | Dimensiones | Fuente(s) | Estado |
+|:--|:--|:--|:--|:--|:--|
+| **P1 (E0):** ¿Qué variables predicen mejor la asistencia de un juego con al menos 48 h de anticipación? | Regresión | `asistencia` (objetivo); `pct_victorias_previo`, `temp_juego_c`, `temp_max_dia_c`, `precipitacion_dia_mm`, `delitos_entorno_dia`, `carreras_*`, `gano_diablos` | `dim_fecha`, `dim_rival`, `dim_horario`, `dim_clima`, `dim_tipo_juego` | F1, F3, F4 | **Parcial.** Se cubren día, horario, rival, fase, clima, rendimiento y seguridad del entorno. Falta el **precio del boleto**: no existe histórico público por juego (C9 descartada). En producción, el clima tendría que venir de un pronóstico, no del dato observado. |
+| **P2 (E0):** ¿Se pueden identificar perfiles dentro del "aficionado fantasma" a partir de sus patrones de consumo? | Segmentación | — | — | — | **No cubierta.** Requiere consumo por persona (punto de venta) y boletaje (Ticketmaster / Pase Diablo), datos privados del club. Se reformula como P2a. |
+| **P2a (ajustada):** ¿Qué perfiles de juego existen según su asistencia, su contexto y la movilidad de llegada? Motivo: sin datos por persona, se segmentan los **juegos**, que es el nivel en el que el club ya ejecuta las acciones de E0 (cierre de zonas, Happy Hour, promociones). | Segmentación | `asistencia`, `pct_ocupacion`, `afluencia_metro_entorno`, `duracion_min` | `dim_fecha`, `dim_rival`, `dim_horario`, `dim_clima`, `dim_tipo_juego` | F1, F2, F3 | **Cubierta** (pregunta ajustada, ver [pivote](pivote.qmd)). |
+| **P3 (E0):** ¿Qué juegos entre semana tienen mayor riesgo de no alcanzar la meta de 9,500 a 10,000 asistentes? | Clasificación | `asistencia` (etiqueta `en_riesgo` = < 9,500); `pct_victorias_previo`, `delitos_entorno_dia`, clima | `dim_fecha` (`es_dia_valle`, `es_quincena`, `es_festivo`), `dim_rival`, `dim_horario`, `dim_clima`, `dim_tipo_juego` | F1, F3, F4 | **Cubierta.** Las variables históricas se calculan con ventanas que terminan 48 h antes del juego. |
+| **P4 (E0):** ¿Qué factores están relacionados con un mayor gasto por persona en comida, bebida y mercancía? | Regresión / correlación | — | — | — | **No cubierta.** No hay datos públicos de consumo dentro del estadio; la ENIGH (C10) mide gasto de hogares, no del estadio. El diseño admite una futura `hechos_venta` con dimensiones conformadas. |
+
+: Matriz de trazabilidad {.striped}
+
+## Verificación inversa: ninguna dimensión ni medida huérfana
+
+Cada dimensión responde al menos una pregunta (original o ajustada):
+
+| Dimensión | P1 | P2a | P3 | Uso concreto |
+|:--|:-:|:-:|:-:|:--|
+| `dim_fecha` | ✔ | ✔ | ✔ | Día de la semana, día valle (filtro de P3), quincena, festivos, temporada. |
+| `dim_rival` | ✔ | ✔ | ✔ | Atractivo del rival y misma zona (rivalidad regional). |
+| `dim_horario` | ✔ | ✔ | ✔ | "Horario no óptimo" (riesgo de E0); hora de salida estimada en P2a. |
+| `dim_clima` | ✔ | ✔ | ✔ | Lluvia y temperatura como variables de contexto. |
+| `dim_tipo_juego` | ✔ | ✔ | ✔ | Separar temporada regular de playoffs (las vistas de P1 y P3 filtran por fase) y marcar dobles carteleras. |
+
+: Dimensiones contra preguntas {.striped}
+
+Y cada medida tiene al menos una pregunta: `asistencia` (P1, P2a, P3), `pct_ocupacion` (P2a, P3), `carreras_diablos`, `carreras_rival` y `gano_diablos` (P1, como insumo del rendimiento), `pct_victorias_previo` (P1, P3), `duracion_min` (P2a), `temp_juego_c` y `temp_max_dia_c` (P1, P3), `precipitacion_dia_mm` (P1, P3), `afluencia_metro_entorno` (P2a; validación de P1) y `delitos_entorno_dia` (P1, P3).
+
+## Estado de las preguntas de E0
+
+| Pregunta | Estado | Vista del DataMart |
+|:--|:--|:--|
+| P1 | Cubierta parcialmente (sin precio) | `vw_p1a_asistencia_contexto`, `vw_p1b_correlaciones` |
+| P2 | No cubierta → reformulada como P2a | — |
+| P2a | Cubierta | `vw_p2a_perfil_juegos` |
+| P3 | Cubierta | `vw_p3a_dataset_riesgo_valle`, `vw_p3b_tasa_riesgo_cubo` |
+| P4 | No cubierta (sin datos de consumo) | — (justificación en [arquitectura](arquitectura.qmd)) |
+
+: Resumen {.striped}
+
+## Relación con el criterio de éxito de E0
+
+- **KPI 1 (asistencia en días valle de 9,500 a 10,000):** medible directamente con `hechos_juego` filtrando `es_dia_valle`. P3 está diseñada alrededor de ese umbral.
+- **KPI 2 (+15 % de gasto per cápita):** no medible con datos públicos; depende de que el club comparta ventas. Ver [pivote](pivote.qmd).
+- **KPI 3 (identificar al 55–60 % de los asistentes en el CRM):** no depende del DW de E1; es una meta de captura de datos del club.

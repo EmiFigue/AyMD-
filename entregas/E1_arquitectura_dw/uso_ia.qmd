@@ -1,0 +1,42 @@
+---
+title: "E1 · Uso de herramientas de IA"
+subtitle: "Registro de la interacción con Claude y de lo que verificó el equipo"
+---
+
+## 1. Investigación de fuentes, diseño del DW 
+
+- **Herramienta utilizada:** Claude (Anthropic), modelo **Claude Opus 5.5**, en claude.ai con herramientas de agente: búsqueda web, lectura de páginas y de la API, y una terminal para validar SQL. Funcionó como herramienta de *deep research*.
+
+
+### Prompt íntegro
+
+> Dado la idea del proyecto mencionada en el sitio de quarto ayudame a elegir e investigar fuentes de datos confiables que nos sirvan para poder analizar los datos necesarios.
+Justifica la eleccion de las funetes y explica su uso
+
+### Tareas para las que se usó
+
+| Tarea | Qué produjo la IA |
+|:--|:--|
+| **Buscar fuentes de datos** (*deep research*) | 10 candidatas; consultas y resultados en la [bitácora de fuentes](fuentes.qmd#proceso-de-búsqueda). Leyó directamente la MLB Stats API (ligas, equipos y calendario con asistencia de 2022, 2025 y 2026). |
+| Proponer granos candidatos | Los 4 granos de [esquema estrella](estrella.qmd#granos-candidatos) y la recomendación de "un juego local". |
+| Scripts de descarga y recorte | `scripts/descargar_lmb.py` y `scripts/filtrar_muestras.py`. |
+
+: Tareas {.striped}
+
+### Lo que la IA verificó y lo que no pudo verificar
+
+| Fuente o artefacto | Verificado por la IA | No verificado por la IA |
+|:--|:--|:--|
+| F1 · MLB Stats API | Abrió los endpoints de ligas, equipos y calendario y confirmó los IDs (liga 125, equipo 532, estadio 5340) y que cada juego trae `attendance`. Leyó los términos de uso de MLBAM. | No ejecutó el script de descarga completo (su terminal no tenía salida a ese dominio). |
+| F2 · Metro CDMX | Confirmó por el buscador que existen el conjunto y el recurso *Desglosada*. | No pudo abrir datos.cdmx.gob.mx (el portal bloquea acceso automatizado): **columnas, cobertura, licencia y tamaño los confirmó el equipo**. |
+| F3 · NOAA GSOD | Conoce el dataset público y su estructura. | No ejecutó consultas en BigQuery (sin credenciales del proyecto): **la estación MMMX la confirmó el equipo** con `sql/staging.sql`. |
+| F4 · FGJ CDMX | Confirmó por el buscador que existe el conjunto (notas técnicas del portal). | Igual que F2: lo abrió y revisó el equipo. |
+
+: Verificación de la IA {.striped}
+
+### Fuentes que propuso la herramienta y se descartaron
+
+Open-Meteo (redundante con GSOD, se deja de respaldo), INEGI ENSU (grano trimestral por ciudad), Wikipedia (asistencia solo de playoffs), sitio y notas de la LMB (sin descarga estructurada; solo validación), precios de boletos (sin histórico) e INEGI ENIGH (gasto de hogares). Ninguna fuente entra al catálogo solo por la salida del LLM: cada una tiene su evidencia de apertura (página de origen y vista previa) en [fuentes](fuentes.qmd#catálogo-de-fuentes).
+
+### Qué hizo el equipo con la salida
+

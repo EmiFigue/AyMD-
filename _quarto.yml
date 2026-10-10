@@ -6,7 +6,7 @@ project:
     - .nojekyll
 
 website:
-  title: "Proyecto Minería de Datos - E0"
+  title: "Proyecto Minería de Datos"
   page-navigation: true
   favicon: images/baseball.svg
   navbar:
@@ -15,23 +15,39 @@ website:
     left:
       - href: index.qmd
         text: Inicio
-      - href: entregas/E0_comprension_negocio/bitacora.qmd
-        text: Bitácora
-      - href: entregas/E0_comprension_negocio/canvas.qmd
-        text: Canvas
-      - href: entregas/E0_comprension_negocio/preguntas.qmd
-        text: Preguntas
-      - href: entregas/E0_comprension_negocio/criterio_exito.qmd
-        text: Criterio Éxito
-      - href: entregas/E0_comprension_negocio/riesgos_supuestos.qmd
-        text: Riesgos
-      - href: entregas/E0_comprension_negocio/uso_ia.qmd
-        text: Uso IA
-      - href: entregas/E0_comprension_negocio/fuentes.qmd
-        text: Fuentes
+      - text: "E0: Negocio"
+        menu:
+          - href: entregas/E0_comprension_negocio/bitacora.qmd
+            text: Bitácora
+          - href: entregas/E0_comprension_negocio/canvas.qmd
+            text: Canvas
+          - href: entregas/E0_comprension_negocio/preguntas.qmd
+            text: Preguntas
+          - href: entregas/E0_comprension_negocio/criterio_exito.qmd
+            text: Criterio Éxito
+          - href: entregas/E0_comprension_negocio/riesgos_supuestos.qmd
+            text: Riesgos
+          - href: entregas/E0_comprension_negocio/fuentes.qmd
+            text: Fuentes
+          - href: entregas/E0_comprension_negocio/uso_ia.qmd
+            text: Uso IA
+      - text: "E1: Arquitectura DW"
+        menu:
+          - href: entregas/E1_arquitectura_dw/fuentes.qmd
+            text: Fuentes de Datos
+          - href: entregas/E1_arquitectura_dw/arquitectura.qmd
+            text: Arquitectura 3 Capas
+          - href: entregas/E1_arquitectura_dw/estrella.qmd
+            text: Esquema Estrella
+          - href: entregas/E1_arquitectura_dw/trazabilidad.qmd
+            text: Trazabilidad
+          - href: entregas/E1_arquitectura_dw/pivote.qmd
+            text: Pivote por Datos
+          - href: entregas/E1_arquitectura_dw/uso_ia.qmd
+            text: Uso IA
   page-footer:
-    left: "Proyecto de Minería de Datos · E0: Comprensión del Negocio"
-    right: "Estadio Alfredo Harp Helú · Diablos Rojos del México"
+    left: "Proyecto de Minería de Datos · Diablos Rojos del México"
+    right: "Estadio Alfredo Harp Helú · UNAM"
 
 format:
   html:

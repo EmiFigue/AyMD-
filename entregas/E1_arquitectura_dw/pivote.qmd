@@ -1,0 +1,50 @@
+---
+title: "E1 · Pivote por falta de datos"
+subtitle: "Ajuste mínimo de P2 y declaración de P4 sin cobertura"
+---
+
+## Resumen
+
+| | Antes (E0) | Después (E0 v2) |
+|:--|:--|:--|
+| **P2** | ¿Se pueden identificar perfiles distintos dentro del "aficionado fantasma" a partir de sus patrones de consumo? | **P2a:** ¿Qué perfiles de juego existen según su asistencia, su contexto (día, horario, rival, clima) y la movilidad de llegada? |
+| **P4** | ¿Qué factores están relacionados con un mayor gasto por persona en comida, bebida y mercancía? | Sin cambio en el texto; se declara **no cubierta** con datos públicos y queda en espera de datos del club. |
+| **Objetivo de minería** | Predecir asistencia para estrategias comerciales. | **Sin cambio.** |
+| **Criterio de éxito** | KPI 1 asistencia en días valle, KPI 2 gasto per cápita, KPI 3 captura en CRM. | KPI 1 sin cambio; KPI 2 y KPI 3 se mantienen como metas de negocio, pero su medición depende de datos privados (ver abajo). |
+
+: Antes y después {.striped}
+
+Las secciones afectadas de E0 se publicaron como nueva versión sin borrar la original: [Preguntas v2](../E0_comprension_negocio/preguntas_v2.qmd) y [Criterio de éxito v2](../E0_comprension_negocio/criterio_exito_v2.qmd).
+
+## Búsqueda realizada
+
+La búsqueda completa (herramientas, consultas, portales y fechas) está en la [bitácora de fuentes](fuentes.qmd#proceso-de-búsqueda). Para P2 y P4 en particular se buscaron, el 8 de octubre de 2026:
+
+| Dato necesario | Dónde se buscó | Resultado |
+|:--|:--|:--|
+| Consumo por persona o por ticket dentro del estadio | Claude, búsqueda web: "datos abiertos ventas alimentos estadio béisbol México consumo aficionados dataset"; Kaggle (fila 10 de la bitácora) | Solo notas de prensa y blogs sobre consumo en eventos; ningún conjunto de datos. |
+| Lo mismo, en portales oficiales | Equipo: datos.gob.mx y Google Dataset Search con "béisbol", "estadio", "consumo" (la herramienta de IA no pudo leer el buscador de datos.gob.mx) | 9 de octubre de 2026. Búsqueda en datos.gob.mx arrojó cero registros transaccionales de taquilla o consumo interno del Estadio Alfredo Harp Helú. Google Dataset Search arrojó únicamente agregados de taquilla anual de la LMB (notas de prensa), sin microdatos de venta ni desglose por aficionado. |
+| Boletaje por comprador y acompañantes | Sistemas que nombró el stakeholder en E0: Ticketmaster y Pase Diablo | Son sistemas comerciales del club; no publican datos, ni agregados por juego. |
+| Gasto en espectáculos deportivos | INEGI · ENIGH | Existe, pero por hogar y por trimestre, sin relación con un juego (C10, descartada). |
+| Precio del boleto por juego | Nota de La Silla Rota usada en E0 (fuente 8) | Solo precios puntuales de una temporada; sin histórico por juego (C9, descartada). |
+
+: Búsqueda para P2 y P4 {.striped}
+
+**Fuentes descartadas y por qué:** C9 (precios: sin histórico por juego), C10 (ENIGH: grano de hogar-trimestre), y los datos de Ticketmaster / Pase Diablo / punto de venta (no públicos). El detalle de las 10 candidatas está en [fuentes](fuentes.qmd#fuentes-candidatas-evaluadas).
+
+## Por qué el resultado sigue en la línea de E0
+
+- **Mismo dominio y mismo problema:** asistencia al Estadio Alfredo Harp Helú. No se cambia de tema.
+- **Misma tarea de minería:** P2a sigue siendo segmentación (clustering). Solo cambia la unidad que se segmenta: de aficionado a **juego**, el cambio mínimo que permiten los datos.
+- **Mismo uso de negocio:** las acciones que el stakeholder describió en E0 (cierre de zonas lejanas, Happy Hour temprano, *flash sales*, alianzas de movilidad a la salida) se deciden **por juego**. Saber qué tipos de juego existen (p. ej. "noche de martes, rival lejano, lluvia, poca llegada en Metro") sirve directamente para elegir qué acción aplicar.
+- **Movilidad:** P2a incorpora la afluencia de Metro y la hora estimada de salida, que responden al punto ciego "movilidad y abandono" de la bitácora de E0.
+
+## Efecto en el criterio de éxito
+
+- **KPI 1 — asistencia en días valle de 9,500 a 10,000:** sin cambio y medible con el DW (`hechos_juego`, `es_dia_valle`). Es el KPI que sostienen P1 y P3.
+- **KPI 2 — +15 % de gasto per cápita:** se mantiene como meta de negocio, pero **no puede medirse con fuentes públicas**. Medirlo requiere que el club comparta ventas por juego; el esquema admite una tabla `hechos_venta` con dimensiones conformadas para ese momento. La métrica técnica asociada en E0 (*Silhouette Score* de los segmentos) se conserva, ahora aplicada a los perfiles de juego de P2a.
+- **KPI 3 — identificar al 55–60 % de asistentes en el CRM:** no depende de este almacén; es una meta de captura de datos del club (Fan ID, registro en torniquetes).
+
+## Lo que no es pivote
+
+Elegir como grano "un juego local" en lugar de registros por aficionado es un **ajuste de grano** a lo que permiten los datos, no un pivote (ver [esquema estrella](estrella.qmd#granos-candidatos)). El pivote se documenta solo por la reformulación de P2 y por dejar P4 sin cobertura, que afectan el criterio de éxito.

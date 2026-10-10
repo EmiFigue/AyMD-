@@ -1,0 +1,288 @@
+---
+title: "E1 · Esquema estrella"
+subtitle: "Hecho, grano, dimensiones, diagrama y DDL"
+---
+
+## Granos candidatos
+
+El grano se definió a partir de lo que las fuentes del [catálogo](fuentes.qmd) permiten realmente, no de cómo E0 imaginó el problema (E0 suponía datos por aficionado y por ticket de consumo, que no son públicos).
+
+| # | Grano candidato | Lo sustenta | Ventaja | Por qué no (o sí) |
+|:--|:--|:--|:--|:--|
+| G1 | **Una fila por juego local** | F1 (asistencia por `gamePk`) | Conserva horario, rival, fase y resultado de cada juego. | ✅ **Elegido.** Es el evento sobre el que el área comercial decide (promociones 48 h antes). |
+| G2 | Una fila por día con juego local (jornada) | F1 agregado + F2, F3, F4 diarios | Resuelve las dobles carteleras (una sola asistencia por día). | Mezcla dos juegos con horarios distintos y pierde el horario, variable clave de P1. Las dobles carteleras son pocas. |
+| G3 | Una fila por serie (≈ 3 juegos contra un rival) | F1 agregado | Suaviza el ruido de un juego aislado. | ≈ 15 series locales por temporada: muy pocas filas para clasificar (P3) y se pierde el día de la semana. |
+| G4 | Una fila por estación de Metro por día | F2 | Grano más fino de movilidad. | No contiene la asistencia, que es la variable objetivo; sirve como contexto, no como hecho. |
+
+: Granos candidatos {.striped}
+
+::: {.callout-important}
+## Grano declarado
+
+**Una fila por juego disputado por los Diablos Rojos del México como local en el Estadio Alfredo Harp Helú (temporadas 2022–2026, temporada regular y playoffs).**
+:::
+
+**Qué permite responder:** P1 (qué variables explican la asistencia de cada juego), P2a (perfiles de juego, pregunta ajustada en el [pivote](pivote.qmd)) y P3 (qué juegos de día valle quedan por debajo de 9,500).
+
+**Qué ya no puede responder (con honestidad):** nada que dependa de la persona o del ticket de compra. P2 original (perfiles del "aficionado fantasma" por consumo) y P4 (gasto por persona) necesitan datos de punto de venta y de boletaje que el club no publica. Tampoco se puede medir el efecto del **precio** del boleto en P1: no existe un histórico público por juego. Estas limitaciones están en la [matriz de trazabilidad](trazabilidad.qmd).
+
+**Regla para las dobles carteleras:** se conservan las dos filas (dos juegos = dos hechos). La API reporta la asistencia en uno solo y `0` en el otro; en la fase de preparación se decidirá si se reparte o se trata como jornada.
+
+## Diagrama
+
+```{mermaid}
+erDiagram
+  DIM_FECHA ||--o{ HECHOS_JUEGO : "fecha_key"
+  DIM_RIVAL ||--o{ HECHOS_JUEGO : "rival_key"
+  DIM_HORARIO ||--o{ HECHOS_JUEGO : "horario_key"
+  DIM_CLIMA ||--o{ HECHOS_JUEGO : "clima_key"
+  DIM_TIPO_JUEGO ||--o{ HECHOS_JUEGO : "tipo_juego_key"
+
+  HECHOS_JUEGO {
+    INT64 juego_id PK "gamePk, degenerada"
+    INT64 fecha_key FK
+    INT64 rival_key FK
+    INT64 horario_key FK
+    INT64 clima_key FK
+    INT64 tipo_juego_key FK
+    INT64 asistencia "aditiva"
+    FLOAT64 pct_ocupacion "no aditiva"
+    INT64 carreras_diablos "aditiva"
+    INT64 carreras_rival "aditiva"
+    INT64 gano_diablos "aditiva"
+    FLOAT64 pct_victorias_previo "no aditiva"
+    INT64 duracion_min "no aditiva"
+    FLOAT64 temp_juego_c "no aditiva"
+    FLOAT64 temp_max_dia_c "no aditiva"
+    FLOAT64 precipitacion_dia_mm "semiaditiva"
+    INT64 afluencia_metro_entorno "semiaditiva"
+    INT64 delitos_entorno_dia "semiaditiva"
+  }
+  DIM_FECHA {
+    INT64 fecha_key PK "AAAAMMDD"
+    DATE fecha
+    INT64 anio
+    INT64 mes
+    STRING nombre_dia
+    BOOL es_fin_semana
+    BOOL es_dia_valle
+    BOOL es_quincena
+    BOOL es_festivo
+    INT64 temporada_lmb
+  }
+  DIM_RIVAL {
+    INT64 rival_key PK
+    INT64 team_id_api "llave natural"
+    STRING nombre_equipo
+    STRING zona
+    BOOL es_rival_misma_zona
+    DATE valido_desde
+    DATE valido_hasta
+    BOOL es_version_actual
+  }
+  DIM_HORARIO {
+    INT64 horario_key PK
+    INT64 hora_inicio_local
+    STRING franja
+    STRING dia_noche_api
+  }
+  DIM_CLIMA {
+    INT64 clima_key PK
+    STRING condicion_api
+    STRING condicion_es
+    STRING categoria_lluvia
+    STRING rango_temperatura
+  }
+  DIM_TIPO_JUEGO {
+    INT64 tipo_juego_key PK
+    STRING game_type_api
+    STRING fase
+    STRING ronda
+    BOOL es_doble_cartelera
+    INT64 numero_juego_en_serie
+    INT64 juegos_en_serie
+  }
+```
+
+## Tabla de hechos: `hechos_juego`
+
+| Medida | Tipo | Aditividad | Fuente | Pregunta |
+|:--|:--|:--|:--|:--|
+| `asistencia` | INT64 | Aditiva | F1 | P1, P2a, P3 (variable objetivo) |
+| `pct_ocupacion` | FLOAT64 | No aditiva (cociente sobre aforo de 20,062) | F1 + aforo | P2a, P3 |
+| `carreras_diablos`, `carreras_rival` | INT64 | Aditivas | F1 | P1 (rendimiento del equipo) |
+| `gano_diablos` | INT64 (0/1) | Aditiva (su suma = victorias) | F1 | P1 |
+| `pct_victorias_previo` | FLOAT64 | No aditiva | F1 (récord antes del juego) | P1, P3 |
+| `duracion_min` | INT64 | No aditiva | F1 | P2a (hora estimada de salida) |
+| `temp_juego_c` | FLOAT64 | No aditiva | F1 (clima al inicio, °F → °C) | P1, P3 |
+| `temp_max_dia_c` | FLOAT64 | No aditiva | F3 | P1, P3 |
+| `precipitacion_dia_mm` | FLOAT64 | Semiaditiva: se suma en el tiempo, no entre dos juegos del mismo día | F3 | P1, P3 |
+| `afluencia_metro_entorno` | INT64 | Semiaditiva (igual que la anterior) | F2 | P2a; validación de P1 |
+| `delitos_entorno_dia` | INT64 | Semiaditiva (igual que la anterior) | F4 | P1, P3 |
+
+: Medidas {.striped}
+
+`juego_id` (el `gamePk` de la API) es una **dimensión degenerada**: identifica el juego y permite rastrear cada fila hasta la fuente, sin necesitar tabla propia.
+
+## Dimensiones
+
+| Dimensión | Llave sustituta | Atributos principales | SCD | Por qué ese tipo |
+|:--|:--|:--|:--|:--|
+| `dim_fecha` | `fecha_key` (AAAAMMDD) | fecha, año, mes, día de la semana, `es_dia_valle`, `es_fin_semana`, `es_quincena`, `es_festivo`, temporada | **Tipo 0** | Un día y sus propiedades de calendario no cambian. |
+| `dim_rival` | `rival_key` (secuencial) | `team_id_api` (natural), nombre, abreviatura, ciudad, zona Norte/Sur, estadio, `es_rival_misma_zona`, vigencia | **Tipo 2** | Los equipos de la LMB se mudan, cambian de nombre o de zona (p. ej. Tecos jugó en 2022 en dos sedes; Charros y Conspiradores se integraron recientemente). Cada juego debe quedar ligado a la versión del rival vigente en esa fecha. |
+| `dim_horario` | `horario_key` | hora de inicio local, franja (mediodía / tarde / noche), `day`/`night` de la API | **Tipo 0** | Catálogo fijo de horas; no hay nada que actualizar. |
+| `dim_clima` | `clima_key` | condición de la API (y su traducción), categoría de lluvia y rango de temperatura del día | **Tipo 0** | Son bandas fijas; un juego se asocia a la banda observada ese día y no se reescribe. |
+| `dim_tipo_juego` | `tipo_juego_key` | código de la API (`R`, `F`, `D`, `L`, `W`), fase, ronda, doble cartelera, juego de la serie | **Tipo 0** | Catálogo de formatos; un cambio de formato de la liga crea filas nuevas, no modifica las viejas. |
+
+: Dimensiones (5, incluida `dim_fecha`) {.striped}
+
+Las cinco dimensiones y todas las medidas están ligadas a una pregunta en la [matriz de trazabilidad](trazabilidad.qmd); ninguna queda huérfana.
+
+## DDL ejecutado en BigQuery
+
+Las tablas se crean vacías (poblarlas es trabajo de la fase de preparación). Las llaves primarias y foráneas se declaran `NOT ENFORCED`: BigQuery no las valida, pero documentan el diseño y ayudan al optimizador. Archivo: [`sql/ddl_dw.sql`](sql/ddl_dw.sql).
+
+```{.sql filename="sql/ddl_dw.sql"}
+-- =====================================================================
+-- E1 · Arquitectura del DW · Capa DW (esquema estrella)
+-- Grano de hechos_juego: una fila por juego disputado por los Diablos
+-- Rojos del Mexico como local en el Estadio Alfredo Harp Helu.
+-- Las tablas se crean vacias: poblarlas corresponde a la fase de
+-- preparacion de los datos (entrega posterior).
+-- Ejecutar en este orden (primero dimensiones, luego hechos).
+-- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- dim_fecha · SCD tipo 0 (el calendario no cambia)
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE TABLE aymd_dw.dim_fecha (
+  fecha_key        INT64  NOT NULL,  -- llave sustituta inteligente AAAAMMDD
+  fecha            DATE   NOT NULL,
+  anio             INT64,
+  mes              INT64,
+  nombre_mes       STRING,
+  dia              INT64,
+  dia_semana_num   INT64,            -- 1 = lunes ... 7 = domingo (ISO)
+  nombre_dia       STRING,
+  semana_iso       INT64,
+  es_fin_semana    BOOL,             -- viernes a domingo
+  es_dia_valle     BOOL,             -- martes, miercoles o jueves (definicion de E0)
+  es_quincena      BOOL,             -- dia de pago (15 o ultimo del mes) y 2 dias siguientes
+  es_festivo       BOOL,             -- descanso obligatorio LFT art. 74 o asueto de Semana Santa
+  nombre_festivo   STRING,
+  temporada_lmb    INT64,
+  PRIMARY KEY (fecha_key) NOT ENFORCED
+)
+OPTIONS (description = 'Dimension de tiempo, grano dia. SCD tipo 0. Responde: P1, P2a, P3.');
+
+-- ---------------------------------------------------------------------
+-- dim_rival · SCD tipo 2 (los equipos de la LMB se mudan, cambian de
+-- nombre o de zona; se conserva la version vigente en cada juego)
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE TABLE aymd_dw.dim_rival (
+  rival_key            INT64  NOT NULL,  -- llave sustituta secuencial
+  team_id_api          INT64  NOT NULL,  -- llave natural (MLB Stats API)
+  nombre_equipo        STRING,
+  nombre_corto         STRING,
+  abreviatura          STRING,
+  ciudad               STRING,
+  zona                 STRING,           -- Norte / Sur
+  estadio_local        STRING,
+  es_rival_misma_zona  BOOL,             -- TRUE si juega en la Zona Sur, como los Diablos
+  valido_desde         DATE   NOT NULL,
+  valido_hasta         DATE,             -- NULL = version vigente
+  es_version_actual    BOOL   NOT NULL,
+  PRIMARY KEY (rival_key) NOT ENFORCED
+)
+OPTIONS (description = 'Equipo visitante. SCD tipo 2. Responde: P1, P2a, P3.');
+
+-- ---------------------------------------------------------------------
+-- dim_horario · SCD tipo 0 (catalogo fijo de horas de inicio)
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE TABLE aymd_dw.dim_horario (
+  horario_key        INT64  NOT NULL,  -- llave sustituta
+  hora_inicio_local  INT64,            -- 0-23, hora de Ciudad de Mexico
+  franja             STRING,           -- 'Mediodia (<16 h)', 'Tarde (16-18 h)', 'Noche (>=19 h)'
+  dia_noche_api      STRING,           -- 'day' / 'night' tal como lo reporta la API
+  PRIMARY KEY (horario_key) NOT ENFORCED
+)
+OPTIONS (description = 'Hora de inicio del juego. SCD tipo 0. Responde: P1, P2a, P3.');
+
+-- ---------------------------------------------------------------------
+-- dim_clima · SCD tipo 0 (catalogo de bandas; un juego se asocia a la
+-- banda observada ese dia, no se actualiza)
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE TABLE aymd_dw.dim_clima (
+  clima_key           INT64  NOT NULL,  -- llave sustituta
+  condicion_api       STRING,           -- 'Cloudy', 'Partly Cloudy', 'Rain'... (MLB Stats API)
+  condicion_es        STRING,           -- traduccion al espanol
+  categoria_lluvia    STRING,           -- 'Sin lluvia', 'Ligera (<5 mm)', 'Moderada (5-20 mm)', 'Fuerte (>20 mm)' (NOAA GSOD)
+  rango_temperatura   STRING,           -- 'Fresco (<18 C)', 'Templado (18-24 C)', 'Calido (>24 C)' (NOAA GSOD, maxima)
+  PRIMARY KEY (clima_key) NOT ENFORCED
+)
+OPTIONS (description = 'Condicion meteorologica del dia del juego en bandas. SCD tipo 0. Responde: P1, P2a, P3.');
+
+-- ---------------------------------------------------------------------
+-- dim_tipo_juego · SCD tipo 0 (catalogo de fases y formato del juego)
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE TABLE aymd_dw.dim_tipo_juego (
+  tipo_juego_key         INT64  NOT NULL,  -- llave sustituta
+  game_type_api          STRING,           -- R, F, D, L, W (MLB Stats API)
+  fase                   STRING,           -- 'Temporada regular' / 'Postemporada'
+  ronda                  STRING,           -- seriesDescription: 'Primera Ronda de Playoffs', 'Serie del Rey'...
+  es_doble_cartelera     BOOL,
+  numero_juego_en_serie  INT64,
+  juegos_en_serie        INT64,
+  PRIMARY KEY (tipo_juego_key) NOT ENFORCED
+)
+OPTIONS (description = 'Fase y formato del juego. SCD tipo 0. Responde: P1, P2a, P3.');
+
+-- ---------------------------------------------------------------------
+-- hechos_juego · grano: un juego local en el Estadio Alfredo Harp Helu
+-- ---------------------------------------------------------------------
+CREATE OR REPLACE TABLE aymd_dw.hechos_juego (
+  juego_id                 INT64  NOT NULL,  -- gamePk de la API (dimension degenerada)
+  fecha_key                INT64  NOT NULL,
+  rival_key                INT64  NOT NULL,
+  horario_key              INT64  NOT NULL,
+  clima_key                INT64  NOT NULL,
+  tipo_juego_key           INT64  NOT NULL,
+  asistencia               INT64,    -- aditiva
+  pct_ocupacion            FLOAT64,  -- no aditiva: asistencia / 20062 (aforo)
+  carreras_diablos         INT64,    -- aditiva
+  carreras_rival           INT64,    -- aditiva
+  gano_diablos             INT64,    -- aditiva (0/1; su suma = victorias)
+  pct_victorias_previo     FLOAT64,  -- no aditiva: % de victorias antes del juego
+  duracion_min             INT64,    -- no aditiva
+  temp_juego_c             FLOAT64,  -- no aditiva: temperatura al inicio (API, convertida de F)
+  temp_max_dia_c           FLOAT64,  -- no aditiva: maxima del dia (NOAA GSOD)
+  precipitacion_dia_mm     FLOAT64,  -- semiaditiva: suma en el tiempo, no entre juegos del mismo dia
+  afluencia_metro_entorno  INT64,    -- semiaditiva: entradas del dia en Cd. Deportiva + Velodromo + Puebla
+  delitos_entorno_dia      INT64,    -- semiaditiva: carpetas FGJ a <= 2 km del estadio ese dia
+  PRIMARY KEY (juego_id) NOT ENFORCED,
+  FOREIGN KEY (fecha_key)      REFERENCES aymd_dw.dim_fecha (fecha_key)           NOT ENFORCED,
+  FOREIGN KEY (rival_key)      REFERENCES aymd_dw.dim_rival (rival_key)           NOT ENFORCED,
+  FOREIGN KEY (horario_key)    REFERENCES aymd_dw.dim_horario (horario_key)       NOT ENFORCED,
+  FOREIGN KEY (clima_key)      REFERENCES aymd_dw.dim_clima (clima_key)           NOT ENFORCED,
+  FOREIGN KEY (tipo_juego_key) REFERENCES aymd_dw.dim_tipo_juego (tipo_juego_key) NOT ENFORCED
+)
+OPTIONS (description = 'Grano: una fila por juego disputado por los Diablos Rojos como local en el Estadio Alfredo Harp Helu (2022-2026). Responde: P1, P2a, P3.');
+```
+
+## Evidencia: esquema de cada tabla en BigQuery
+
+![Ejecución del DDL en el editor de BigQuery](img/dw_ddl_ejecutado.png)
+
+::: {layout-ncol=2}
+![`hechos_juego`](img/dw_hechos_juego.png)
+
+![`dim_fecha`](img/dw_dim_fecha.png)
+
+![`dim_rival`](img/dw_dim_rival.png)
+
+![`dim_horario`](img/dw_dim_horario.png)
+
+![`dim_clima`](img/dw_dim_clima.png)
+
+![`dim_tipo_juego`](img/dw_dim_tipo_juego.png)
+:::

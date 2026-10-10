@@ -1,0 +1,194 @@
+---
+title: "E1 · Fuentes de datos"
+subtitle: "Búsqueda documentada, catálogo verificado y análisis de integración"
+---
+
+## Punto de partida (E0)
+
+El problema de E0 es la **asistencia irregular al Estadio Alfredo Harp Helú** (Diablos Rojos del México), sobre todo en los juegos de martes a jueves (*días valle*). Las preguntas de E0 reciben un identificador que se usa en todo E1:
+
+| ID | Pregunta de E0 | Tarea de minería |
+|:--|:--|:--|
+| **P1** | ¿Qué variables predicen mejor la asistencia de un juego con al menos 48 horas de anticipación? | Regresión |
+| **P2** | ¿Se pueden identificar perfiles dentro del "aficionado fantasma" a partir de sus patrones de consumo? | Segmentación |
+| **P3** | ¿Qué juegos entre semana tienen mayor riesgo de no alcanzar la meta de 9,500 a 10,000 asistentes? | Clasificación |
+| **P4** | ¿Qué factores se relacionan con un mayor gasto por persona en comida, bebida y mercancía? | Regresión / correlación |
+
+Con esas preguntas, la búsqueda necesitaba: (a) asistencia **por juego** con fecha, rival y horario; (b) variables de contexto del día (clima, movilidad, seguridad del entorno); y (c) datos de consumo y de aficionados (P2, P4).
+
+## Proceso de búsqueda
+
+La búsqueda combinó una herramienta de investigación profunda (Claude, ver [Uso de IA](uso_ia.qmd)) con revisión directa de portales. Todas las consultas automáticas se hicieron el **8 de octubre de 2026**.
+
+| # | Herramienta / portal | Consulta o acción | Resultado |
+|:--|:--|:--|:--|
+| 1 | Claude (lectura de API) | `statsapi.mlb.com/api/v1/sports` y `/league?sportId=23` | La Liga Mexicana aparece como liga **125** dentro de *Independent Leagues* (sportId 23), temporada 2026: 16-abr a 15-sep. |
+| 2 | Claude (lectura de API) | `/teams?sportId=23&leagueIds=125&season=2025` | Diablos Rojos = **equipo 532**; Estadio Alfredo Harp Helú = **venue 5340**; 20 equipos con zona Norte/Sur. |
+| 3 | Claude (lectura de API) | `/schedule?...&teamId=532&hydrate=gameInfo,weather` para muestras de 2022, 2025 y 2026 (temporada regular y playoffs) | Cada juego trae **asistencia**, hora de inicio, duración, clima al inicio, serie y doble cartelera. |
+| 4 | Claude (búsqueda web) | "afluencia diaria Metro CDMX datos abiertos csv fecha linea estacion" | Conjunto *Afluencia diaria del Metro CDMX* en datos.cdmx.gob.mx, con recursos *Simple* y *Desglosada*. |
+| 5 | Claude (búsqueda web) | "datos.cdmx.gob.mx carpetas de investigación FGJ" | Conjunto *Carpetas de investigación FGJ de la Ciudad de México* (notas técnicas del portal). |
+| 6 | Claude (búsqueda web) | "bigquery-public-data noaa_gsod stations Mexico City" | Dataset público `bigquery-public-data.noaa_gsod`; la estación del AICM se identifica con el código OACI **MMMX**. |
+| 7 | Claude (lectura de página) | Open-Meteo *Historical Weather API* | API de reanálisis (ERA5/ERA5-Land) con temperatura y precipitación diarias. |
+| 8 | Claude (lectura de página) | INEGI · ENSU | Encuesta trimestral de percepción de inseguridad urbana. |
+| 9 | Claude (lectura de página) | Wikipedia · *2024 Mexican Baseball League season* | Asistencia por juego **solo en playoffs**; no hay tabla de temporada regular. |
+| 10 | Claude (búsqueda web) | "kaggle dataset Liga Mexicana de Beisbol LMB attendance" | Sin datasets de Kaggle con asistencia de la LMB; solo notas de prensa. |
+| 11 | Claude (búsqueda web) | "datos abiertos ventas alimentos estadio béisbol México consumo aficionados dataset" (para P2 y P4) | Sin conjuntos de datos; solo notas de prensa. Ver [pivote](pivote.qmd). |
+| 12 | Claude (lectura de página) | Wikipedia · *Estadio Alfredo Harp Helú* | Aforo **20,062**, alcaldía Iztacalco, coordenadas 19.404 N, 99.0855 O. |
+| 13 | Equipo (portal) | Apertura manual de cada fuente elegida, descarga y vista previa | 9 de octubre de 2026 por el equipo (verificación de URLs, descargas de muestra y validación de esquemas en BigQuery; ver capturas en carpeta img). |
+
+: Bitácora de búsqueda {.striped}
+
+::: {.callout-note}
+**Por qué la verificación manual es obligatoria aquí.** El portal datos.cdmx.gob.mx bloquea el acceso automatizado (`robots.txt`), así que la herramienta de IA solo pudo confirmar que los conjuntos existen por el índice del buscador, no abrir los archivos. El equipo los abrió, descargó y revisó directamente; las capturas de abajo son esa evidencia.
+:::
+
+## Fuentes candidatas evaluadas
+
+Se evaluaron **10 candidatas** con cinco criterios: (1) ¿responde alguna pregunta de E0?, (2) ¿el grano es día o más fino?, (3) ¿cubre 2022–2026 y la CDMX?, (4) ¿la licencia permite uso académico?, (5) ¿se puede abrir y verificar?
+
+| # | Candidata | Tipo | Decisión | Motivo |
+|:--|:--|:--|:--|:--|
+| C1 | **MLB Stats API · Liga Mexicana** | API | ✅ Elegida | Única fuente con asistencia **por juego** para temporada regular y playoffs. Alimenta P1, P2a y P3. |
+| C2 | **Afluencia diaria del Metro CDMX (desglosada)** | Archivo de portal abierto (CSV) | ✅ Elegida | Grano estación–día; las estaciones Ciudad Deportiva, Velódromo y Puebla (Línea 9) rodean el estadio. Aproxima la movilidad de llegada (E0: "movilidad y abandono"). |
+| C3 | **NOAA GSOD** (`bigquery-public-data.noaa_gsod`) | Dataset público de BigQuery | ✅ Elegida | Clima diario **observado** en el AICM (~3 km del estadio): precipitación y temperatura máxima, que la API de juegos no trae. |
+| C4 | **Carpetas de investigación FGJ CDMX** | Archivo de portal abierto (CSV) | ✅ Elegida | Delitos con fecha y coordenadas: aproxima la inseguridad del entorno, el riesgo principal que nombró el stakeholder en E0. |
+| C5 | INEGI · ENSU (percepción de inseguridad) | Encuesta / tabulados | ❌ Descartada | Grano trimestral por ciudad: no distingue un juego de otro. Queda como contexto. |
+| C6 | Open-Meteo Historical Weather API | API | ❌ Descartada (respaldo) | Es reanálisis modelado (ERA5), no observación; redundante con C3. Se usará solo si MMMX tiene huecos. |
+| C7 | Wikipedia · temporadas de la LMB | Página web | ❌ Descartada | Asistencia solo de playoffs; sin temporada regular. |
+| C8 | Sitio oficial LMB / notas de récord de asistencia | Página web | ❌ Descartada como tabla | Sin descarga estructurada. Se usa para **validar** totales de C1 (récord de 14,443 por juego citado en E0). |
+| C9 | Precios de boletos (Ticketmaster, notas de prensa) | Página web / privado | ❌ Descartada | No hay histórico de precio por juego; Ticketmaster no publica datos. P1 queda **parcial** (sin precio). |
+| C10 | INEGI · ENIGH (gasto en espectáculos) | Microdatos de encuesta | ❌ Descartada | Gasto del hogar por trimestre, no consumo dentro del estadio. No responde P4. |
+
+: Candidatas y criterio de selección {.striped}
+
+Las cuatro elegidas son de **tres tipos distintos**: API (C1), archivo de portal abierto (C2 y C4) y dataset público de BigQuery (C3).
+
+## Catálogo de fuentes
+
+### F1 · MLB Stats API — Liga Mexicana de Béisbol
+
+| Campo | Registro |
+|:--|:--|
+| **Nombre y dueño** | MLB Stats API (endpoint `schedule`), MLB Advanced Media, L.P. La plataforma incluye a la Liga Mexicana de Béisbol como liga 125. |
+| **URL y acceso** | <https://statsapi.mlb.com/api/v1/schedule?sportId=23&teamId=532&startDate=2025-05-06&endDate=2025-05-11&hydrate=gameInfo,weather> · API REST pública sin llave. Descarga con [`scripts/descargar_lmb.py`](scripts/descargar_lmb.py). |
+| **Formato y tamaño** | JSON → CSV plano; ~500–600 filas (todas las fechas 2022–2026 de los Diablos, local y visitante), < 1 MB. |
+| **Grano** | Una fila por juego programado (`gamePk`). |
+| **Cobertura** | Temporadas 2022–2026 (verificadas con muestras de 2022, 2025 y 2026), temporada regular (`R`) y playoffs (`F`, `D`, `L`, `W`). Se actualiza en vivo durante la temporada. |
+| **Licencia y restricciones** | Términos de MLBAM: uso individual, **no comercial y no masivo** (<http://gdx.mlb.com/components/copyright.txt>). El script hace 5 peticiones. Sin datos personales. |
+| **Llaves de integración** | `officialDate` (fecha local del juego), `teams.away.team.id` (rival), `venue.id = 5340`, `gamePk`. |
+| **Pregunta(s) de E0** | P1, P2a, P3 |
+
+::: {layout-ncol=2}
+![Página de origen: respuesta JSON del endpoint con `attendance`](img/f1_lmb_origen.png)
+
+![Vista previa de los datos descargados](img/f1_lmb_datos.png)
+:::
+
+### F2 · Afluencia diaria del Metro CDMX (desglosada)
+
+| Campo | Registro |
+|:--|:--|
+| **Nombre y dueño** | *Afluencia diaria del Metro CDMX*, Sistema de Transporte Colectivo Metro, publicado por la Agencia Digital de Innovación Pública (ADIP) en el Portal de Datos Abiertos de la CDMX. |
+| **URL y acceso** | <https://datos.cdmx.gob.mx/dataset/afluencia-diaria-del-metro-cdmx> · recurso *Afluencia Diaria del Metro (Desglosada)*: <https://datos.cdmx.gob.mx/dataset/afluencia-diaria-del-metro-cdmx/resource/cce544e1-dc6b-42b4-bc27-0d8e6eb3ed72>. Descarga directa del CSV y recorte con [`scripts/filtrar_muestras.py`](scripts/filtrar_muestras.py). |
+| **Formato y tamaño** | CSV. Archivo completo: ~185 MB. Muestra cargada (3 estaciones del entorno AHH: Ciudad Deportiva, Puebla, Velódromo, 2022–2026): 5,844 filas (~0.62 MB).|
+| **Grano** | Una fila por fecha × línea × estación × tipo de pago (desglosada). |
+| **Cobertura** | Todas las estaciones del Metro; serie diaria 2022–2026. Último mes disponible: agosto de 2026. |
+| **Licencia y restricciones** | Licencia Libre de Uso No Comercial del Portal de Datos Abiertos de la Ciudad de México (CC0 / Dominio Público Gobierno CDMX). Sin datos personales (conteos agregados de afluencia). |
+| **Llaves de integración** | `fecha`; `estacion` (Ciudad Deportiva, Velódromo, Puebla — Línea 9). |
+| **Pregunta(s) de E0** | P2a (perfil de llegada), P1 (como validación de la asistencia, no como predictor: el dato del mismo día no existe 48 h antes) |
+
+::: {layout-ncol=2}
+![Página de origen en datos.cdmx.gob.mx](img/f2_metro_origen.png)
+
+![Vista previa del CSV de afluencia](img/f2_metro_datos.png)
+:::
+
+### F3 · NOAA Global Surface Summary of the Day (GSOD)
+
+| Campo | Registro |
+|:--|:--|
+| **Nombre y dueño** | *Global Surface Summary of the Day*, NOAA National Centers for Environmental Information, publicado como dataset público de Google Cloud. |
+| **URL y acceso** | BigQuery: `bigquery-public-data.noaa_gsod` (tablas `gsodAAAA` y `stations`) · consola: <https://console.cloud.google.com/bigquery?p=bigquery-public-data&d=noaa_gsod&page=dataset>. Se copia a staging con [`sql/staging.sql`](sql/staging.sql). |
+| **Formato y tamaño** | Tabla de BigQuery; una tabla por año (millones de filas, todas las estaciones del mundo). Muestra: una estación × 5 años ≈ 1,700 filas. |
+| **Grano** | Una fila por estación por día. |
+| **Cobertura** | Estación MMMX (Aeropuerto Internacional de la Ciudad de México, ~3 km al oriente del estadio), 2022–2026; actualización diaria con rezago de días. |
+| **Licencia y restricciones** | Datos de NOAA, uso libre; los datos de estaciones fuera de EE. UU. siguen la Resolución 40 de la OMM (no redistribución comercial). Sin datos personales. |
+| **Llaves de integración** | `year`, `mo`, `da` → fecha; `stn` (USAF) vía `stations.call = 'MMMX'`. |
+| **Pregunta(s) de E0** | P1, P2a, P3 |
+
+::: {layout-ncol=2}
+![Dataset público noaa_gsod en BigQuery](img/f3_gsod_origen.png)
+
+![Resultado de la consulta de la estación MMMX](img/f3_gsod_datos.png)
+:::
+
+### F4 · Carpetas de investigación de la FGJ de la Ciudad de México
+
+| Campo | Registro |
+|:--|:--|
+| **Nombre y dueño** | *Carpetas de investigación FGJ de la Ciudad de México*, Fiscalía General de Justicia de la CDMX, publicado en el Portal de Datos Abiertos de la CDMX. |
+| **URL y acceso** | <https://datos.cdmx.gob.mx/dataset/carpetas-de-investigacion-fgj-de-la-ciudad-de-mexico> · descarga del CSV y recorte a 2 km del estadio con [`scripts/filtrar_muestras.py`](scripts/filtrar_muestras.py). |
+| **Formato y tamaño** | CSV. Archivos anuales consolidados: ~340 MB. Muestra cargada (radio ≤ 2 km del Estadio AHH, 2022–2026): 3,218 filas (~0.85 MB). |
+| **Grano** | Una fila por carpeta de investigación (un hecho denunciado). |
+| **Cobertura** | Ciudad de México (polígono alcaldías Iztacalco y Venustiano Carranza); serie diaria 2022–2026. Último mes disponible: agosto de 2026. |
+| **Licencia y restricciones** | Licencia de Datos Abiertos de la Ciudad de México. **Dato sensible:** solo se usan conteos agregados por día dentro del radio perimetral; no se publica ningún registro individual ni datos de víctimas. |
+| **Llaves de integración** | `fecha_hecho` (no `fecha_inicio`, que es la fecha de la denuncia); `latitud` / `longitud` contra las coordenadas del estadio. |
+| **Pregunta(s) de E0** | P1, P3 (riesgo de seguridad señalado por el stakeholder) |
+
+::: {layout-ncol=2}
+![Página de origen en datos.cdmx.gob.mx](img/f4_fgj_origen.png)
+
+![Vista previa del CSV de carpetas](img/f4_fgj_datos.png)
+:::
+
+## Análisis de integración
+
+Las cuatro fuentes se unen en un solo almacén por la **fecha** del juego y, para las de contexto, por la **ubicación** del estadio. El juego es el evento central; las fuentes de contexto (diarias o más finas) se agregan al día y se pegan al juego.
+
+```{mermaid}
+flowchart LR
+  F1["F1 · MLB Stats API<br/>1 fila = juego"] -->|officialDate, team id, venue 5340| J(("Juego local<br/>en el AHH"))
+  F3["F3 · NOAA GSOD<br/>1 fila = estación-día"] -->|year-mo-da, estación MMMX| D(("Día"))
+  F2["F2 · Metro<br/>1 fila = estación-día-tipo de pago"] -->|fecha, 3 estaciones L9| D
+  F4["F4 · FGJ<br/>1 fila = carpeta"] -->|fecha_hecho, ≤ 2 km| D
+  D -->|fecha_key| J
+```
+
+| Fuente | Llave de unión | Grano original | Cómo llega al grano del hecho |
+|:--|:--|:--|:--|
+| F1 | `officialDate`, `away.team.id`, `venue.id` | juego | Directo (filtrar `venue.id = 5340` y `status = Final`). |
+| F3 | `year`+`mo`+`da` | estación–día | Una estación; se une 1:1 por fecha. |
+| F2 | `fecha` + `estacion` | estación–día–tipo de pago | Suma de los tipos de pago y de las 3 estaciones → día. |
+| F4 | `fecha_hecho` + coordenadas | carpeta (evento) | Conteo de carpetas a ≤ 2 km → día. |
+
+: Llaves y granularidad {.striped}
+
+### Problemas anticipados (se documentan aquí; se resuelven en la fase de preparación)
+
+**Fechas y zonas horarias**
+
+- La API entrega `gameDate` y `firstPitch` en **UTC**. Un juego de las 19:00 en la CDMX aparece como 01:00 del día siguiente en UTC. La llave correcta es `officialDate`, que ya es la fecha local.
+- México tuvo horario de verano hasta octubre de 2022: durante la temporada 2022 la CDMX estaba en UTC−5 y desde 2023 en UTC−6. La hora local de inicio debe calcularse con la zona `America/Mexico_City`, no con un desfase fijo.
+- No está confirmado si el "día" de GSOD es UTC o local. Si es UTC, la lluvia de la noche local (18:00–24:00) cae en la fila del día siguiente; hay que verificarlo antes de usar `prcp` para juegos nocturnos.
+
+**Registros del calendario (F1)**
+
+- **Dobles carteleras:** en la muestra del 6 de junio de 2026 la asistencia se reportó una sola vez (15,047) y el otro juego del mismo día trae `0`.
+- **Juegos pospuestos, suspendidos y reanudados** aparecen con el mismo `gamePk` en más de una fila (p. ej. 846445 aparece tres veces). Hay que deduplicar y quedarse con el registro `Final`.
+- **Asistencia mayor al aforo:** en la Serie del Rey 2025 se reportan 21,000 asistentes contra un aforo de 20,062. `pct_ocupacion` puede superar 1; se marcará, no se corregirá.
+- La API también trae juegos de **visitante** y un juego de playoffs se jugó en Puebla; el filtro es `venue.id = 5340`, no "el equipo local es 532".
+- Los nombres vienen **sin acentos** ("Diablos Rojos del Mexico", "Leones de Yucatan"). Se une por `team.id`, nunca por nombre.
+
+**Catálogos y unidades**
+
+- GSOD reporta temperatura en °F, precipitación en pulgadas y faltantes como `9999.9` / `99.99`; la API reporta la temperatura en °F como texto. Todo se convertirá a °C y mm.
+- En el Metro el nombre de estación puede variar en acentos y mayúsculas ("Velódromo" / "Velodromo"); el script de recorte normaliza solo para **filtrar**, sin cambiar el valor.
+
+**Representatividad de las fuentes de contexto**
+
+- El Metro registra **entradas**, no salidas: mide la llegada, no el abandono. Además, junto al estadio están el Estadio GNP Seguros (antes Foro Sol), el Palacio de los Deportes y el Autódromo; un concierto el mismo día infla la afluencia sin relación con el béisbol.
+- En la FGJ, `fecha_inicio` (denuncia) puede ser días después de `fecha_hecho`; hay carpetas sin coordenadas (el script las cuenta) y los datos más recientes se revisan con rezago.
+
+**Cobertura**
+
+- F1 cubre 2022–2026 completo. F2 y F4 se publican con rezago, así que 2026 puede quedar incompleto en las medidas de contexto. 2021 se excluye a propósito: hubo aforo restringido por COVID-19.
